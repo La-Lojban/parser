@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      .link {
+        fill: none;
+        stroke: #ccc;
+        stroke-width: 2px;
+      }
+    </style>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+
+    <script type="text/javascript" src="./loglan.js"></script>
+    <script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="https://d3js.org/d3-color.v1.min.js"></script>
+    <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script>
+      var hashCode = function (s) {
+        return s.split('').reduce(function (a, b) {
+          a = (a << 5) - a + b.charCodeAt(0)
+          return a & a
+        }, 0)
+      }
+      function clearJson(obj, ignores) {
+        if (ignores === void 0) {
+          ignores = [null, undefined, '']
+        }
+        var isNonEmpty = function (d) {
+          return (
+            !ignores.includes(d) &&
+            (typeof d !== 'object' || Object.keys(d).length)
+          )
+        }
+        return (
+          JSON.parse(JSON.stringify(obj), function (_, v) {
+            if (v && v.rule && /^[A-Z]+[0-9]*/.test(v.rule)) v.children = []
+            if (Array.isArray(v)) {
+              v = v.filter(Boolean).flat()
+            }
+            if (v && v.children && !Array.isArray(v.children)) {
+              v.children = [v.children]
+            }
+
+            if (isNonEmpty(v)) return v
+          }) || {}
+        )
+      }
+
+      function drawTree(o) {
+        d3.select('#' + o.divID)
+          .select('svg')
+          .remove()
+
+        var viz = d3
+          .select('#' + o.divID)
+          .append('svg')
+          .attr('width', o.width)
+          .attr('height', o.height)
+
+        var vis = viz
+          .append('g')
+          .attr('id', 'treeg')
+          .attr('transform', 'translate(' + o.padding + ',' + o.padding + ')')
+
+        var tree = d3.layout
+          .tree()
+          .size([o.width - 2 * o.padding, o.height - 2 * o.padding])
+
+        var diagonal = d3.svg.diagonal().projection(function (d) {
+          return [d.x, d.y]
+        })
+
+        var nodes = tree.nodes(o.treeData)
+
+        var link = vis
+          .selectAll('pathlink')
+          .data(tree.links(nodes))
+          .enter()
+          .append('path')
+          .attr('class', 'link')
+          .attr('d', diagonal)
+
+        var node = vis
+          .selectAll('g.node')
+          .data(nodes)
+          .enter()
+          .append('g')
+          .attr('transform', function (d) {
+            return 'translate(' + d.x + ',' + d.y + ')'
+          })
+
+        // node
+        //   .append('circle')
+        //   .attr('r', 40)
+        //   .style('fill', function (d) {
+        //     return d.children ? '#E14B3B' : '#1C8B98'
+        //   })
+
+        node
+          .append('svg:text')
+          .attr('dx', function (d) {
+            return d.children ? 0 : 0
+          })
+          .attr('dy', function (d) {
+            return d.children ? 5 : 5
+          })
+          .attr('text-anchor', function (d) {
+            return d.children ? 'middle' : 'middle'
+          })
+          .style('fill', function (d) {
+            return d3.schemeDark2[Math.abs(hashCode(d.rule)) % 8]
+          })
+          .text(function (d) {
+            // return d.rule || ''
+            return `[${d.rule || ''}] ${d.text || ''}`.trim()
+          })
+      }
+
+      function parse() {
+        var text = document.getElementById('input').value
+        if (text === '') return
+        var treeEl = document.getElementById('tree')
+        var viz = document.getElementById('viz')
+        try {
+          var tree = clearJson(peg$parse(text))
+          //   document.getElementById('tree').innerHTML = JSON.stringify(
+          //     tree,
+          //     null,
+          //     2
+          //   )
+
+          drawTree({
+            divID: 'viz',
+            width: document.body.clientWidth,
+            height: 1600,
+            padding: 10,
+            treeData: tree,
+          })
+          treeEl.classList = 'd-none'
+          viz.classList = 'd-block card p-2 mt-2'
+        } catch (error) {
+          treeEl.classList = 'd-block card p-2 mt-2'
+          treeEl.innerHTML = JSON.stringify(error)
+          viz.classList = 'd-none'
+        }
+      }
+    </script>
+  </head>
+
+  <body class="p-2">
+    <meta charset="utf-8" />
+
+    <textarea
+      class="form-control mb-2 w-100"
+      id="input"
+      rows="3"
+      autofocus
+      placeholder="Type any Loglan text. The result will be parsed as you type."
+      onkeyup="parse()"
+    ></textarea>
+    <button
+      class="btn btn-info"
+      type="button"
+      onclick="document.getElementById('input').value=''"
+    >
+      Clear
+    </button>
+    <div id="tree" class="d-none"></div>
+    <div id="viz" class="d-none"></div>
+  </body>
+</html>
