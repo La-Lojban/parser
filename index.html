@@ -124,7 +124,7 @@
       }
 
       function parse() {
-        var text = document.getElementById('input').value
+        var text = document.getElementById('input').value.trim()
         if (text === '') return
         var treeEl = document.getElementById('tree')
         var viz = document.getElementById('viz')
