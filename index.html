@@ -2,7 +2,10 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
     <style>
       .link {
         fill: none;
@@ -31,7 +34,7 @@
       }
       function clearJson(obj, ignores) {
         if (ignores === void 0) {
-          ignores = [null, undefined, '']
+          ignores = [null, undefined, '', " "]
         }
         var isNonEmpty = function (d) {
           return (
@@ -39,9 +42,10 @@
             (typeof d !== 'object' || Object.keys(d).length)
           )
         }
-        return (
+        const parsed =
           JSON.parse(JSON.stringify(obj), function (_, v) {
-            if (v && v.rule && /^[A-Z]+[0-9]*/.test(v.rule)) v.children = []
+            if (v && v.rule && /^([A-Z]+[0-9]*|comma\b|comma2\b|period\b|end\b)/.test(v.rule)) v.children = []
+            if (v && v.rule && ["end"].includes(v.rule)) return
             if (Array.isArray(v)) {
               v = v.filter(Boolean).flat()
             }
@@ -49,9 +53,11 @@
               v.children = [v.children]
             }
 
-            if (isNonEmpty(v)) return v
+            if (!isNonEmpty(v)) return
+            return v
           }) || {}
-        )
+
+        return parsed
       }
 
       function drawTree(o) {
@@ -76,7 +82,7 @@
           .size([o.width - 2 * o.padding, o.height - 2 * o.padding])
 
         var diagonal = d3.svg.diagonal().projection(function (d) {
-          return [d.x, d.y]
+          return [d.x || 0, d.y || 0]
         })
 
         var nodes = tree.nodes(o.treeData)
@@ -95,7 +101,7 @@
           .enter()
           .append('g')
           .attr('transform', function (d) {
-            return 'translate(' + d.x + ',' + d.y + ')'
+            return 'translate(' + (d.x||0) + ',' + (d.y||0) + ')'
           })
 
         // node
@@ -117,7 +123,7 @@
             return d.children ? 'middle' : 'middle'
           })
           .style('fill', function (d) {
-            return d3.schemeDark2[Math.abs(hashCode(d.rule)) % 8]
+            return d3.schemeDark2[Math.abs(hashCode(d.rule || '')) % 8]
           })
           .text(function (d) {
             // return d.rule || ''
@@ -132,11 +138,6 @@
         var viz = document.getElementById('viz')
         try {
           var tree = clearJson(peg$parse(text))
-          //   document.getElementById('tree').innerHTML = JSON.stringify(
-          //     tree,
-          //     null,
-          //     2
-          //   )
 
           drawTree({
             divID: 'viz',
@@ -145,6 +146,19 @@
             padding: 10,
             treeData: tree,
           })
+          console.log(tree)
+          // try {
+          //   treeEl.innerHTML = JSON.stringify(
+          //     tree,
+          //     null,
+          //     2
+          //     )
+
+          //   } catch (error) {
+          //     console.log(error)
+          //     treeEl.classList = 'd-block card p-2 mt-2'
+
+          // }
           treeEl.classList = 'd-none'
           viz.classList = 'd-block card p-2 mt-2'
         } catch (error) {
@@ -197,7 +211,7 @@
       </div>
       <div class="row">
         <div class="col-xs-12">
-          <div id="viz" class="d-none" style="min-width:600px;"></div>
+          <div id="viz" class="d-none" style="min-width: 600px"></div>
         </div>
       </div>
     </div>
