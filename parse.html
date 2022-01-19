@@ -42,20 +42,36 @@
       </div>
       <div class="row">
         <div class="col-xs-12">
-          <button
-            class="btn btn-outline-secondary mr-1"
-            type="button"
-            onclick="document.getElementById('input').value=''"
+          <div
+            class="d-flex"
+            role="group"
+            aria-label="Basic radio toggle button group"
           >
-            Clear
-          </button>
-          <button
-            class="btn btn-info mr-1"
-            type="button"
-            onclick="document.getElementById('input').value='kamla mi soi crano i ti limhone';parse();"
-          >
-            Example
-          </button>
+            <button
+              class="btn btn-outline-secondary me-1"
+              type="button"
+              onclick="document.getElementById('input').value=''"
+            >
+              Clear
+            </button>
+            <button
+              class="btn btn-info me-1"
+              type="button"
+              onclick="document.getElementById('input').value='kamla mi soi crano';parse();"
+            >
+              Example
+            </button>
+            <select
+              id="compactor"
+              onchange="compactor()"
+              class="form-select"
+              aria-label="Default select example"
+            >
+              <option selected value="compact">Compact</option>
+              <option value="compact-all">Compact all</option>
+              <option value="up-to-lexemes">Up to lexemes</option>
+            </select>
+          </div>
         </div>
       </div>
       <div class="row">
@@ -76,10 +92,11 @@
           return a & a
         }, 0)
       }
-      function clearJson(obj, ignores) {
-        if (ignores === void 0) {
-          ignores = [null, undefined, '', ' ']
-        }
+      function clearJson(
+        obj,
+        ignores = [null, undefined, '', ' '],
+        opts = { removeIntermediateNodes: true, importantNodes: [] }
+      ) {
         var isNonEmpty = function (d) {
           return (
             !ignores.includes(d) &&
@@ -107,10 +124,20 @@
               v.children = [v.children]
             }
             try {
-              if (v && v.children)
+              if (v && v.children) {
+                if (opts.removeIntermediateNodes)
+                  while (
+                    v.children &&
+                    v.children.length === 1 &&
+                    !opts.importantNodes.includes(v.children[0].rule)
+                  ) {
+                    if (!v.children[0].children) break
+                    v.children = v.children[0].children
+                  }
                 for (let n in v.children) {
                   v.children[n].parent = v.id
                 }
+              }
             } catch (error) {
               console.log(error)
             }
@@ -129,6 +156,8 @@
               id: obj.id,
               fill: '#f8f8f8',
               stroke: '#4d90fe',
+              childrenLength: obj.children ? obj.children.length : 0,
+              childrenIds: obj.children ? obj.children.map((i) => i.id) : [],
             })
           for (key in obj) {
             if (typeof obj[key] !== 'object') {
@@ -140,8 +169,64 @@
           return res
         }
         flattenJSON(parsed)
+
         return flattened
         // return parsed
+      }
+
+      let opts_default = {
+        removeIntermediateNodes: true,
+        importantNodes: [
+          'juelink',
+          'jelink',
+          'links',
+          'predunit',
+          'descpred',
+          'sentpred',
+          'modifier',
+          'name',
+          'voc',
+          'argmod',
+          'argument',
+          'argumentA',
+          'argumentB',
+          'argumentC',
+          'argumentD',
+          'argumentE',
+          'barepred',
+          'predicate',
+          'statement',
+          'sentence',
+          'freemod',
+          'uttC',
+          'uttF',
+        ],
+      }
+      let opts = opts_default
+      try {
+        var value = localStorage.getItem('compactor')
+        if (value) {
+          document.getElementById('compactor').value = value
+          compactor(value)
+        }
+      } catch (error) {}
+
+      function compactor(val) {
+        var value = val || document.getElementById('compactor').value
+        switch (value) {
+          case 'compact-all':
+            opts = opts_default
+            opts.importantNodes = []
+            break
+          case 'up-to-lexemes':
+            opts = {}
+            break
+          default:
+            opts = opts_default
+            break
+        }
+        localStorage.setItem('compactor', value)
+        parse()
       }
 
       function parse() {
@@ -150,7 +235,7 @@
         var treeEl = document.getElementById('tree')
         var viz = document.getElementById('viz')
         try {
-          var tree = clearJson(peg$parse(text))
+          var tree = clearJson(peg$parse(text), undefined, opts)
           // viz.innerHTML = JSON.stringify(tree)
           draw(tree)
           treeEl.classList = 'd-none'
