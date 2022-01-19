@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <style>
+      .link {
+        fill: none;
+        stroke: #ccc;
+        stroke-width: 2px;
+      }
+    </style>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <script type="text/javascript" src="./go.js"></script>
+
+    <script type="text/javascript" src="./loglan.js"></script>
+  </head>
+
+  <body class="p-2">
+    <div class="content-fluid">
+      <div class="row">
+        <div class="col-12">
+          <form>
+            <textarea
+              class="form-control mb-2 w-100"
+              id="input"
+              rows="3"
+              autofocus
+              placeholder="Type any Loglan text. The result will be parsed as you type."
+              onkeyup="parse()"
+            ></textarea>
+          </form>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <button
+            class="btn btn-outline-secondary mr-1"
+            type="button"
+            onclick="document.getElementById('input').value=''"
+          >
+            Clear
+          </button>
+          <button
+            class="btn btn-info mr-1"
+            type="button"
+            onclick="document.getElementById('input').value='kamla mi soi crano';parse();"
+          >
+            Example
+          </button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div id="tree" class="d-none"></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div id="viz" style="width: 100%; height: calc(100vh - 180px)"></div>
+        </div>
+      </div>
+    </div>
+    <script>
+      var hashCode = function (s) {
+        return s.split('').reduce(function (a, b) {
+          a = (a << 5) - a + b.charCodeAt(0)
+          return a & a
+        }, 0)
+      }
+      function clearJson(obj, ignores) {
+        if (ignores === void 0) {
+          ignores = [null, undefined, '', ' ']
+        }
+        var isNonEmpty = function (d) {
+          return (
+            !ignores.includes(d) &&
+            (typeof d !== 'object' || Object.keys(d).length)
+          )
+        }
+        let node_id = 0
+        const parsed =
+          JSON.parse(JSON.stringify(obj), function (_, v) {
+            if (v) {
+              v.id = node_id
+              node_id++
+            }
+            if (
+              v &&
+              v.rule &&
+              /^([A-Z]+[0-9]*|comma\b|comma2\b|period\b|end\b)/.test(v.rule)
+            )
+              delete v.children
+            if (v && v.rule && ['end'].includes(v.rule)) return
+            if (Array.isArray(v)) {
+              v = v.filter(Boolean).flat()
+            }
+            if (v && v.children && !Array.isArray(v.children)) {
+              v.children = [v.children]
+            }
+            try {
+              if (v && v.children)
+                for (let n in v.children) {
+                  v.children[n].parent = v.id
+                }
+            } catch (error) {
+              console.log(error)
+            }
+
+            if (!isNonEmpty(v)) return
+            return v
+          }) || {}
+
+        let flattened = []
+        const flattenJSON = (obj = {}, res = {}) => {
+          if (obj.rule)
+            flattened.push({
+              parent: obj.parent,
+              key: obj.id,
+              text: `[${obj.rule || ''}] ${obj.text || ''}`.trim(),
+              id: obj.id,
+              fill: '#f8f8f8',
+              stroke: '#4d90fe',
+            })
+          for (key in obj) {
+            if (typeof obj[key] !== 'object') {
+              res[key] = obj[key]
+            } else {
+              flattenJSON(obj[key], res, `${key}.`)
+            }
+          }
+          return res
+        }
+        flattenJSON(parsed)
+        return flattened
+        // return parsed
+      }
+
+      function parse() {
+        var text = document.getElementById('input').value.trim()
+        if (text === '') return
+        var treeEl = document.getElementById('tree')
+        var viz = document.getElementById('viz')
+        try {
+          var tree = clearJson(peg$parse(text))
+          // viz.innerHTML = JSON.stringify(tree)
+          draw(tree)
+          treeEl.classList = 'd-none'
+          viz.classList = 'd-block mt-2'
+        } catch (error) {
+          treeEl.classList = 'd-block card p-2 mt-2'
+          treeEl.innerHTML = JSON.stringify(error)
+          viz.classList = 'd-none'
+        }
+      }
+
+      var myDiagram, $
+      function init() {
+        $ = go.GraphObject.make // for conciseness in defining templates
+        myDiagram = $(go.Diagram, 'viz', {
+          allowCopy: false,
+          allowDelete: false,
+          allowMove: true,
+          allowZoom: true,
+          layout: $(
+            FlatTreeLayout, // custom Layout, defined below
+            {
+              angle: 90,
+              compaction: go.TreeLayout.CompactionNone,
+            }
+          ),
+          'undoManager.isEnabled': true,
+        })
+
+        myDiagram.nodeTemplate = $(
+          go.Node,
+          'Vertical',
+          { selectionObjectName: 'BODY' },
+          $(
+            go.Panel,
+            'Auto',
+            { name: 'BODY' },
+            $(
+              go.Shape,
+              'RoundedRectangle',
+              new go.Binding('fill'),
+              new go.Binding('stroke')
+            ),
+            $(
+              go.TextBlock,
+              {
+                font: 'bold 12pt Arial, sans-serif',
+                margin: new go.Margin(4, 2, 2, 2),
+              },
+              new go.Binding('text')
+            )
+          ),
+          $(
+            go.Panel, // this is underneath the "BODY"
+            { height: 17 }, // always this height, even if the TreeExpanderButton is not visible
+            $('TreeExpanderButton')
+          )
+        )
+
+        myDiagram.linkTemplate = $(go.Link, $(go.Shape, { strokeWidth: 1.5 }))
+        myDiagram.model = $(go.TreeModel, { nodeDataArray: [] })
+      }
+
+      function FlatTreeLayout() {
+        go.TreeLayout.call(this) // call base constructor
+      }
+      go.Diagram.inherit(FlatTreeLayout, go.TreeLayout)
+      // This assumes the TreeLayout.angle is 90 -- growing downward
+      FlatTreeLayout.prototype.commitLayout = function () {
+        go.TreeLayout.prototype.commitLayout.call(this) // call base method first
+        // find maximum Y position of all Nodes
+        var y = -Infinity
+        this.network.vertexes.each(function (v) {
+          y = Math.max(y, v.node.position.y)
+        })
+        // move down all leaf nodes to that Y position, but keeping their X position
+        this.network.vertexes.each(function (v) {
+          if (v.destinationEdges.count === 0) {
+            // shift the node down to Y
+            v.node.position = new go.Point(v.node.position.x, y)
+            // extend the last segment vertically
+            v.node.toEndSegmentLength = Math.abs(v.centerY - y)
+          } else {
+            // restore to normal value
+            v.node.toEndSegmentLength = 10
+          }
+        })
+      }
+      // end FlatTreeLayout
+
+      function draw(treeData) {
+        // create the Model with data for the tree, and assign to the Diagram
+        myDiagram.model = $(go.TreeModel, { nodeDataArray: treeData })
+      }
+
+      window.addEventListener('DOMContentLoaded', init)
+    </script>
+  </body>
+</html>
