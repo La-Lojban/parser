@@ -202,7 +202,7 @@
           'uttF',
         ],
       }
-      let opts = opts_default
+      let opts = {...opts_default}
       try {
         var value = localStorage.getItem('compactor')
         if (value) {
@@ -215,14 +215,14 @@
         var value = val || document.getElementById('compactor').value
         switch (value) {
           case 'compact-all':
-            opts = opts_default
+            opts = {...opts_default}
             opts.importantNodes = []
             break
           case 'up-to-lexemes':
             opts = {}
             break
           default:
-            opts = opts_default
+            opts = {...opts_default}
             break
         }
         localStorage.setItem('compactor', value)
