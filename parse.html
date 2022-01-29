@@ -71,9 +71,9 @@
               <option selected value="compact">Compact</option>
               <option value="up-to-lexemes">Up to lexemes</option>
               <option value="up-to-morphemes">Up to morphemes</option>
-              <option value="predicate">Show stress</option>
-              <option value="PhoneticComplex">Show stress-2</option>
-              <option value="PreComplex">Show affixes</option>
+              <!-- <option value="predicate">Show stress</option> -->
+              <!-- <option value="PhoneticComplex">Show stress-2</option> -->
+              <!-- <option value="PreComplex">Show affixes</option> -->
             </select>
           </div>
         </div>
@@ -225,7 +225,7 @@
             opts.importantNodes = []
             break
           case 'up-to-lexemes':
-            opts = {startRule: 'utterance'}
+            opts = { startRule: 'utterance' }
             break
           case 'up-to-morphemes':
             opts = { startRule: 'utterance', morphemes: true }
@@ -254,7 +254,8 @@
         var viz = document.getElementById('viz')
         try {
           var tree = clearJson(
-            peg$parse(text, { startRule: opts.startRule || 'utterance' }),
+            peg$parse(text, {
+              startRule: opts.startRule || 'utterance'}),
             undefined,
             opts
           )
