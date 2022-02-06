@@ -25,7 +25,7 @@
   </head>
 
   <body class="p-2">
-    <div class="content-fluid">
+    <div class="content-fluid p-2">
       <div class="row">
         <div class="col-12">
           <form>
@@ -115,6 +115,7 @@
               v.id = node_id
               node_id++
             }
+            if (v && v.rule && opts.lowNodes && opts.lowNodes.includes(v.rule)) delete v.children;
             if (
               !opts.morphemes &&
               v &&
@@ -216,6 +217,11 @@
           'DefaultStressedSyllable',
           'VowelFinal'
         ],
+        lowNodes: [
+          'DefaultStressedSyllable',
+          'VowelFinal',
+          'Syllable'
+        ],
       }
       let opts = { ...opts_default }
       try {
@@ -242,15 +248,6 @@
           case 'up-to-morphemes':
             opts = { startRule: 'utterance', morphemes: true }
             break
-          // case 'PhoneticComplex':
-          //   opts = { startRule: 'PhoneticComplex', morphemes: true }
-          //   break
-          // case 'PreComplex':
-          //   opts = { startRule: 'PreComplex', morphemes: true }
-          //   break
-          // case 'predicate':
-          //   opts = { startRule: 'predicate', morphemes: true }
-          //   break
           default:
             opts = { ...opts_default }
             break
