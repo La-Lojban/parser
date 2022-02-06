@@ -67,6 +67,7 @@
               class="form-select"
               aria-label="Default select example"
             >
+              <option value="stress">Show stress</option>
               <option value="compact-all">Compact all</option>
               <option selected value="compact">Compact</option>
               <option value="up-to-lexemes">Up to lexemes</option>
@@ -179,7 +180,7 @@
         // return parsed
       }
 
-      let opts_default = {
+      const opts_default = {
         removeIntermediateNodes: true,
         startRule: 'utterance',
         importantNodes: [
@@ -208,6 +209,14 @@
           'uttF',
         ],
       }
+      const opts_stress = {
+        removeIntermediateNodes: true,
+        startRule: 'utterance',
+        importantNodes: [
+          'DefaultStressedSyllable',
+          'VowelFinal'
+        ],
+      }
       let opts = { ...opts_default }
       try {
         var value = localStorage.getItem('compactor')
@@ -220,6 +229,9 @@
       function compactor(val) {
         var value = val || document.getElementById('compactor').value
         switch (value) {
+          case 'stress':
+            opts = { ...opts_stress, morphemes: true }
+            break
           case 'compact-all':
             opts = { ...opts_default }
             opts.importantNodes = []
