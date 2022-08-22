@@ -1,0 +1,39 @@
+{
+  "name": "loglan-parser",
+  "version": "1.0.0",
+  "description": "Loglan PEG parser with visualization",
+  "scripts": {
+    "start": "parcel index.html --open",
+    "build": "parcel build index.html --public-url ./",
+    "pages": "rm -rf node_modules/.cache/gh-pages && node scripts/publish"
+  },
+  "overrides": {
+    "cytoscape-elk": {
+      "elkjs": "0.8.1"
+    }
+  },
+  "dependencies": {
+    "cytoscape": "3.22.1",
+    "cytoscape-cola": "^2.5.1",
+    "cytoscape-context-menus": "4.1.0",
+    "cytoscape-cose-bilkent": "4.1.0",
+    "cytoscape-dagre": "2.4.0",
+    "cytoscape-elk": "^2.0.2",
+    "cytoscape-expand-collapse": "4.1.0",
+    "cytoscape-fcose": "^2.1.0",
+    "cytoscape-klay": "^3.1.4",
+    "cytoscape-navigator": "2.0.2",
+    "elkjs": "0.8.1",
+    "cytoscape-node-html-label": "1.2.2",
+    "web-worker": "^1.2.0"
+  },
+  "devDependencies": {
+    "@babel/core": "7.18.13",
+    "gh-pages": "^4.0.0",
+    "parcel": "2.7.0"
+  },
+  "keywords": [
+    "javascript",
+    "starter"
+  ]
+}
