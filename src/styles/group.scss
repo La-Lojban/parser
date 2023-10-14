@@ -1,0 +1,42 @@
+.group {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: top;
+}
+
+.group.hide {
+  display: none;
+}
+
+.group.show {
+  display: inline-flex;
+}
+
+.group-graphic {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 3px;
+  width: '100%';
+  height: '100%';
+  background: #f00;
+  margin-top: 16px;
+  border: 1px solid #f00;
+}
+
+.group-graphic > .icon {
+  background: #f00;
+}
+
+.group-label {
+  font-family: "Nokia Pure Regular";
+  font-size: 10px;
+  max-width: 75px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  // color: #757575;
+  text-transform: uppercase;
+  margin-top: 6px;
+}

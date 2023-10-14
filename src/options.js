@@ -1,36 +1,51 @@
+import pics from "../assets/parsed-xraste.json";
+
+export const regexpCompressPointyRules = RegExp(
+  /^([A-Z]+[0-9]*|comma\b|comma2\b|period\b|end\b)/
+);
+
 export const optionsDefault = {
+  pics,
   removeIntermediateNodes: true,
-  startRule: "utterance",
+  startRule: "text",
   importantNodes: [
-    "juelink",
-    "jelink",
-    "links",
-    "predunit",
-    "descpred",
-    "sentpred",
-    "modifier",
-    "label",
-    "voc",
-    "argmod",
-    "argument",
-    "argumentA",
-    "argumentB",
-    "argumentC",
-    "argumentD",
-    "argumentE",
-    "barepred",
-    "predicate",
+    "text",
+    "paragraphs",
+    "paragraph",
     "statement",
+    "statement",
+    "fragment",
+    "prenex",
     "sentence",
-    "freemod",
-    "uttC",
-    "uttF",
+    "bridi_tail",
+    "tail_terms",
+    "terms",
+    "term",
+    "sumti",
+    "relative_clauses",
+    "relative_clause",
+    "selbri",
+    "tanru_unit",
+    "quantifier",
+    "mex",
+    "operator",
+    "operand",
+    "tag",
+    "vocative",
+    "indicators",
+    "indicator",
+    "BRIVLA",
+  ],
+  pictureRules: ["BRIVLA_pre"],
+  hyperedgeRules: [
+    // "argument","freemod",
+    // "PhoneticComplexTail"
   ],
 };
 
 export const optionsStress = {
   removeIntermediateNodes: true,
-  startRule: "utterance",
+  startRule: "text",
   importantNodes: ["DefaultStressedSyllable", "VowelFinal"],
   lowNodes: ["DefaultStressedSyllable", "VowelFinal", "Syllable"],
 };
@@ -46,52 +61,107 @@ export const layouts = {
     label: "Dagre Vertical",
     name: "dagre",
   },
-  grid: {
-    label: "Grid",
+  NLPTree: {
+    label: "Linguistic tree",
+    renderer: "NLPTree",
+    name: "NLPTree",
+    config: {
+      alignBottom: false,
+    },
   },
-  circle: {
-    label: "Circle",
+  NLPTreeB: {
+    label: "Linguistic tree (bottom-aligned)",
+    renderer: "NLPTree",
+    name: "NLPTree",
+    config: {
+      alignBottom: true,
+    },
   },
-  breadthfirst: {
-    label: "Breadth-first",
+  three: {
+    label: "3D Normal",
+    renderer: "three.js",
+    config: {
+      dagMode: undefined,
+      dagLevelDistance: 60,
+    },
   },
-  klay: {
-    label: "Klay",
+  threeLR: {
+    label: "3D Horizontal",
+    renderer: "three.js",
+    config: {
+      dagMode: "lr",
+      dagLevelDistance: 60,
+    },
+  },
+  threeTD: {
+    label: "3D Vertical",
+    renderer: "three.js",
+    config: {
+      dagMode: "td",
+      dagLevelDistance: 60,
+      _3D: true,
+    },
+  },
+  klayH: {
+    name: "klay",
+    label: "Klay Horizontal",
     padding: 4,
     nodeDimensionsIncludeLabels: true,
     klay: {
+      direction: "RIGHT",
       spacing: 40,
       mergeEdges: false,
+      nodeLayering: "NETWORK_SIMPLEX",
     },
   },
-  fcose: {
-    label: "FCose",
+  klayV: {
+    name: "klay",
+    label: "Klay Vertical",
+    padding: 4,
+    nodeDimensionsIncludeLabels: true,
+    klay: {
+      direction: "DOWN",
+      spacing: 40,
+      mergeEdges: false,
+      nodeLayering: "NETWORK_SIMPLEX",
+      nodePlacement: "LINEAR_SEGMENTS",
+    },
+  },
+  grid: {
+    label: "Grid",
+  },
+  concentric: {
+    label: "Concentric",
+  },
+  breadthfirst: {
+    label: "Breadth-first",
+    circle: false,
+  },
+  // cola: {
+  //   label: "Cola",
+  //   maxSimulationTime: 40000,
+  // },
+  cise: {
+    label: "Cise",
   },
   cose: {
     label: "Cose",
   },
-
-  cola: {
-    label: "Cola",
-    maxSimulationTime: 40000,
-  },
-  random: {
-    label: "Random",
-  },
 };
-["box", "disco", "force", "layered", "mrtree", "random", "stress"].forEach(
-  (elkAlgo) => {
-    layouts[`elk_${elkAlgo}`] = {
-      label: `ELK ${elkAlgo.replace(/(^\w|\s\w)/g, (m) => m.toUpperCase())}`,
-      name: "elk",
-      elk: {
-        algorithm: elkAlgo,
-      },
-    };
-  }
-);
+["box", "force", "layered", "mrtree", "stress"].forEach((elkAlgo) => {
+  layouts[`elk_${elkAlgo}`] = {
+    label: `ELK ${elkAlgo.replace(/(^\w|\s\w)/g, (m) => m.toUpperCase())}`,
+    name: "elk",
+    padding: 20,
+    spacingFactor: 1.1,
+    elk: {
+      algorithm: elkAlgo,
+      // 'elk.direction': 'RIGHT',
+    },
+  };
+});
 
 export const examples = {
-  1: "kamla mi soi crano, i ti limhone",
-  2: "mi cluva tu",
+  1: "ko pinxe fi ti sei mi xalbo .i ti botpi",
+  2: "mi tavla do",
 };

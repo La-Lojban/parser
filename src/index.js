@@ -1,19 +1,29 @@
-import { parse } from "./parse";
-import { renderGraph } from "./cy";
+import { parse } from "./renderers/parse";
+import { renderGraph } from "./renderers/cytoscape";
 import { optionsDefault, optionsStress, layouts, examples } from "./options";
-let opts = { ...optionsDefault };
+import { render3DGraph } from "./renderers/three";
 
-/*
-  on input change
+import { clearElement, destroyAll } from "./renderers/common";
+import { renderNLPTree } from "./renderers/nlp-tree";
 
-*/
+let opts = { ...optionsDefault, layout: layouts.dagreH };
+
 function runParse(text) {
-  renderGraph({ options: opts, data: parse(text, opts) });
+  if (!window.loaded) return;
+  destroyAll();
+  clearElement("cy");
+  // clearElement('navigator');
+
+  if (opts.layout.renderer === "NLPTree")
+    renderNLPTree({ options: opts, data: parse(text, { ...opts }) });
+  else if (opts.layout.renderer === "three.js")
+    render3DGraph({ options: opts, data: parse(text, { ...opts }) });
+  else renderGraph({ options: opts, data: parse(text, { ...opts }) });
+  localStorage.setItem("input", text);
 }
 
 document.getElementById("input").addEventListener("keyup", (e) => {
   runParse(e.target.value);
-  localStorage.setItem("input", e.target.value);
 });
 
 document.getElementById("example1").addEventListener("click", (e) => {
@@ -77,26 +87,57 @@ function compactor() {
   const value = document.getElementById("compactor").value;
   switch (value) {
     case "stress":
-      opts = { layout: opts.layout, ...optionsStress, morphemes: true };
+      opts = {
+        ...optionsDefault,
+        ...optionsStress,
+        layout: opts.layout,
+        morphemes: true,
+      };
       break;
     case "compact-all":
-      opts = { layout: opts.layout, ...optionsDefault };
+      opts = { ...optionsDefault, layout: opts.layout, morphemes: false };
       opts.importantNodes = [];
       break;
     case "up-to-lexemes":
-      opts = { layout: opts.layout, startRule: "utterance" };
+      opts = {
+        ...optionsDefault,
+        layout: opts.layout,
+        startRule: "utterance",
+        morphemes: false,
+      };
       break;
     case "up-to-morphemes":
-      opts = { layout: opts.layout, startRule: "utterance", morphemes: true };
+      opts = {
+        ...optionsDefault,
+        layout: opts.layout,
+        startRule: "utterance",
+        morphemes: true,
+      };
       break;
+    case "compact":
     default:
-      opts = { layout: opts.layout, ...optionsDefault };
+      opts = { ...optionsDefault, layout: opts.layout, morphemes: false };
       break;
   }
   localStorage.setItem("compactor", value);
   runParse(document.getElementById("input").value);
 }
 
-document.addEventListener("DOMContentLoaded", () =>
-  runParse(document.getElementById("input").value)
+window.loaded = false;
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("loader").remove();
+  document.getElementById("cy").classList.remove("d-none");
+  const query = decodeURI(window.location.search).replace("?", "");
+  if (query != null && query.length > 2)
+    document.getElementById("input").value = query;
+  window.loaded = true;
+  runParse(document.getElementById("input").value);
+});
+
+window.addEventListener(
+  "resize",
+  function () {
+    runParse(document.getElementById("input").value);
+  },
+  true
 );
