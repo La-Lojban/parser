@@ -37,7 +37,7 @@ jobs:
     - name: Run Docker container
       uses: kohlerdominik/docker-run-action@v1
       with:
-        run: yarn build
+        run: yarn build && yarn zip
         image: lojban:latest
         # environment: |
         #   THIS_REPO_NAME=${{ secrets.THIS_REPO_NAME }}
@@ -51,7 +51,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: output-files
-        path: ${{ github.workspace }}/data/artifact.zip
+        path: ${{ github.workspace }}/dist/artifact.zip
         
     - name: Cleanup
       uses: AutoModality/action-clean@v1
@@ -74,7 +74,7 @@ jobs:
         path: ${{ github.workspace }}/artifact.zip
 
     - name: Unzip artifact
-      run: chmod u+rw artifact.zip/artifact.zip && unzip artifact.zip/artifact.zip && rm -rf artifact.zip
+      run: chmod u+rw artifact.zip/artifact.zip && unzip artifact.zip/artifact.zip && rm -rf artifact.zip && mv ./dist/* . && rm -rf ./dist
 
     # - name: Unzip artifact
     #   run: unzip artifact.zip && rm artifact.zip

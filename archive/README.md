@@ -1,1 +1,1 @@
-# loglan-parser
+# lojban-parser
