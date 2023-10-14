@@ -4,7 +4,7 @@ import { optionsDefault, optionsStress, layouts, examples } from "./options";
 import { render3DGraph } from "./renderers/three";
 
 import { clearElement, destroyAll } from "./renderers/common";
-import { renderNLPTree } from "./renderers/nlp-tree";
+import { renderNLPTree } from "./renderers/syntax-tree";
 
 let opts = { ...optionsDefault, layout: layouts.dagreH };
 

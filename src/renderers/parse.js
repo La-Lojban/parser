@@ -1,7 +1,7 @@
 import { parse as pegParse } from "../camxes";
 import { generate as generateCy } from "./cytoscape";
 import { generate as generateThree } from "./three";
-import { getNLPTree } from "./nlp-tree";
+import { getNLPTree } from "./syntax-tree";
 import { regexpCompressPointyRules } from "../options";
 
 const hashCode = function (s) {
