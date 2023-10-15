@@ -42,5 +42,6 @@ WORKDIR /app
 COPY *.json /app/
 COPY *.lock /app/
 COPY *.ts /app/
+COPY *.md /app/
 
 RUN yarn
