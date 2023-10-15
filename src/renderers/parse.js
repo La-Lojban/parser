@@ -30,18 +30,18 @@ function getNodesNEdges(obj, opts) {
       leaf.id = node_id;
       node_id++;
 
+      leaf.children = leaf.children
+        ? Array.isArray(leaf.children)
+          ? leaf.children
+          : [leaf.children]
+        : [];
+      
       //prettify leaf's children
-      if (
-        opts.lowNodes?.includes(leaf.rule) ||
-        (!opts.morphemes && regexpCompressPointyRules.test(leaf.rule))
-      ) {
+      if (opts.lowNodes?.includes(leaf.rule)) {
+        leaf.children = [];
+      } else if (!opts.morphemes && regexpCompressPointyRules.test(child.rule)) {
         leaf.children = [];
       } else {
-        leaf.children = leaf.children
-          ? Array.isArray(leaf.children)
-            ? leaf.children
-            : [leaf.children]
-          : [];
         leaf.children = leaf.children.flat(Infinity).filter(Boolean);
         // .filter((_) => typeof _.rule === "undefined");
 
@@ -128,11 +128,11 @@ export function parse(text, options) {
   if (!text) return;
   try {
     const parsed = pegParse(text, {
-      startRule: options.startRule || "utterance",
+      startRule: options.startRule || "text",
     });
     // const parsed = {};
 
-    console.log("parse tree: ", JSON.stringify(parsed), options);
+    // console.log("parse tree: ", JSON.stringify(parsed), options);
     const tree = getNodesNEdges(parsed, options);
 
     return tree;

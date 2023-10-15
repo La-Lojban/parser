@@ -102,7 +102,7 @@ function compactor() {
       opts = {
         ...optionsDefault,
         layout: opts.layout,
-        startRule: "utterance",
+        startRule: "text",
         morphemes: false,
       };
       break;
@@ -110,7 +110,7 @@ function compactor() {
       opts = {
         ...optionsDefault,
         layout: opts.layout,
-        startRule: "utterance",
+        startRule: "text",
         morphemes: true,
       };
       break;

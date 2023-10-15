@@ -1,7 +1,7 @@
 import pics from "../assets/parsed-xraste.json";
 
 export const regexpCompressPointyRules = RegExp(
-  /^([A-Z]+[0-9]*|comma\b|comma2\b|period\b|end\b)/
+  /^([a-z])$/
 );
 
 export const optionsDefault = {
