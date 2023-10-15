@@ -1,3 +1,3 @@
 # Lojban parser
 
-has some slick visual guides and a picture dictionary embedded
+Lojnban parser with some slick visual guides and a picture dictionary embedded
