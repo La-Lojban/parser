@@ -39,7 +39,7 @@ function getNodesNEdges(obj, opts) {
       //prettify leaf's children
       if (opts.lowNodes?.includes(leaf.rule)) {
         leaf.children = [];
-      } else if (!opts.morphemes && regexpCompressPointyRules.test(child.rule)) {
+      } else if (!opts.morphemes && regexpCompressPointyRules.test(leaf.rule)) {
         leaf.children = [];
       } else {
         leaf.children = leaf.children.flat(Infinity).filter(Boolean);
