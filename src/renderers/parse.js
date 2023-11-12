@@ -23,7 +23,10 @@ function getNodesNEdges(obj, opts) {
   const { pics } = opts;
   let node_id = 0;
   let arr = [];
-  function eachRecursive(leaf, { ancestorId, ancestorHasPic, parentLeaf }) {
+  function eachRecursive(
+    leaf,
+    { ancestorId, ancestorHasPic, parentLeaf, ancestorLeafIsGroup }
+  ) {
     if (typeof leaf.rule === "undefined") return;
     if (leaf.rule) {
       //add id prop to this leaf
@@ -35,7 +38,7 @@ function getNodesNEdges(obj, opts) {
           ? leaf.children
           : [leaf.children]
         : [];
-      
+
       //prettify leaf's children
       if (opts.lowNodes?.includes(leaf.rule)) {
         leaf.children = [];
@@ -75,9 +78,17 @@ function getNodesNEdges(obj, opts) {
           ? encodeURIComponent(pics[leaf.text])
           : undefined;
 
-      const parent = opts.hyperedgeRules.includes(leaf.rule)
-        ? "group" + node_id
-        : undefined;
+      //check if this rule contains morphemes
+      let containsMorphemes;
+      if (!ancestorLeafIsGroup) {
+        containsMorphemes = opts.hyperedgeRules.includes(leaf.rule);
+        if (!containsMorphemes)
+          leaf.children.forEach((child) => {
+            if (RegExp("^[a-z' .]$").test(child.rule)) containsMorphemes = true;
+          });
+      }
+
+      const parent = containsMorphemes ? "group" + node_id : undefined;
 
       //add our node
       arr.push(
@@ -113,6 +124,7 @@ function getNodesNEdges(obj, opts) {
       //traverse children
       leaf.children.forEach((child) =>
         eachRecursive(child, {
+          ancestorLeafIsGroup: ancestorLeafIsGroup || containsMorphemes,
           ancestorId: parent ?? ancestorId,
           ancestorHasPic: ancestorHasPic ?? typeof leaf.pic !== "undefined",
           parentLeaf: leaf,

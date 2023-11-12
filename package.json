@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Lojban PEG parser with visualization",
   "scripts": {
-    "start": "parcel src/index.html --open",
+    "start": "parcel src/index.html --no-cache --open",
     "build": "yarn fetch-parser && yarn fetch-xraste && parcel build src/index.html --public-url ./ --no-source-maps && cp -avr *.md ./dist/",
     "zip": "zip -r dist/artifact.zip ./dist",
     "serve": "cd dist && concurrently --kill-others --raw \"python3 -m http.server 8001\" \"ngrok http 8001\"",

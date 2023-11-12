@@ -8,12 +8,17 @@ import { renderNLPTree } from "./renderers/syntax-tree";
 
 let opts = { ...optionsDefault, layout: layouts.dagreH };
 
+if (module.hot) {
+  module.hot.accept();
+}
+
 function runParse(text) {
   if (!window.loaded) return;
   destroyAll();
   clearElement("cy");
   // clearElement('navigator');
 
+  text = text.replace(/\./g,' ').replace(/ {2,}/g,' ');
   if (opts.layout.renderer === "NLPTree")
     renderNLPTree({ options: opts, data: parse(text, { ...opts }) });
   else if (opts.layout.renderer === "three.js")
@@ -35,9 +40,9 @@ document.getElementById("example2").addEventListener("click", (e) => {
   runParse(examples["2"]);
 });
 
-document.getElementById("compactor").addEventListener("change", (e) => {
-  compactor();
-});
+// document.getElementById("compactor").addEventListener("change", (e) => {
+//   compactor();
+// });
 
 const layouter = document.getElementById("layouter");
 Object.keys(layouts).forEach((name) => {
@@ -59,13 +64,13 @@ try {
   document.getElementById("input").value = value ?? examples["2"];
 } catch (error) {}
 
-try {
-  const value = localStorage.getItem("compactor");
-  if (value) {
-    document.getElementById("compactor").value = value;
-    compactor(value);
-  }
-} catch (error) {}
+// try {
+//   const value = localStorage.getItem("compactor");
+//   if (value) {
+//     document.getElementById("compactor").value = value;
+//     compactor(value);
+//   }
+// } catch (error) {}
 
 try {
   const value = localStorage.getItem("layouter");

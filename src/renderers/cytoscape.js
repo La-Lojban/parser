@@ -190,7 +190,7 @@ export function renderGraph({ data, options }) {
       {
         selector: "$node > node",
         css: {
-          "background-color": "#fff",
+          "background-color": "#ffe",
           "background-opacity": "1",
           // "border-radius": "5px",
           "border-width": "1px",
@@ -207,6 +207,7 @@ export function renderGraph({ data, options }) {
           "text-wrap": "none",
           "text-max-width": "75px",
           padding: "16px",
+          "padding-relative-to": "width"
         },
       },
       {

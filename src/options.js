@@ -1,12 +1,10 @@
 import pics from "../assets/parsed-xraste.json";
 
-export const regexpCompressPointyRules = RegExp(
-  /^([a-z])$/
-);
+export const regexpCompressPointyRules = RegExp(/^([a-z])$/);
 
 export const optionsDefault = {
   pics,
-  removeIntermediateNodes: true,
+  removeIntermediateNodes: false,
   startRule: "text",
   importantNodes: [
     "text",
@@ -37,10 +35,7 @@ export const optionsDefault = {
     "BRIVLA",
   ],
   pictureRules: ["BRIVLA_pre"],
-  hyperedgeRules: [
-    // "argument","freemod",
-    // "PhoneticComplexTail"
-  ],
+  hyperedgeRules: ["spaces","gismu","fuhivla","CMEVLA","brivla"],
 };
 
 export const optionsStress = {
