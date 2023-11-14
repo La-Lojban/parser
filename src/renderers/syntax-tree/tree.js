@@ -8,8 +8,13 @@ const NodeType = {
   VALUE: "VALUE",
 };
 
+let MAX_ZOOM = 5;
+let MIN_ZOOM = 0.1;
+let SCROLL_SENSITIVITY = 0.0005;
+
 export default class Tree {
   constructor(c) {
+    this.syntaxTree = null;
     this.nodeColor = true;
     this.font = "sans-serif";
     this.terminalColor = "#BB1100";
@@ -22,6 +27,30 @@ export default class Tree {
     this.canvas = c;
     this.vscaler = 1;
     this.context = c.getContext("2d");
+    this.cameraOffset = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+    this.cameraZoom = 1;
+    this.isDragging = false;
+    this.dragStart = { x: 0, y: 0 };
+    this.initialPinchDistance = null;
+    this.lastZoom = this.cameraZoom;
+
+    this.canvas.addEventListener("mousedown", this.onPointerDown.bind(this));
+    this.canvas.addEventListener("touchstart", (e) =>
+      this.handleTouch(e, this.onPointerDown.bind(this)).bind(this)
+    );
+    this.canvas.addEventListener("mouseup", this.onPointerUp.bind(this));
+    this.canvas.addEventListener("touchend", (e) =>
+      this.handleTouch(e, this.onPointerUp.bind(this)).bind(this)
+    );
+    this.canvas.addEventListener("mousemove", this.onPointerMove.bind(this));
+    this.canvas.addEventListener("touchmove", (e) =>
+      this.handleTouch(e, this.onPointerMove.bind(this)).bind(this)
+    );
+    this.canvas.addEventListener("wheel", (e) =>
+      this.adjustZoom(e.deltaY * SCROLL_SENSITIVITY)
+    );
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
   }
 
   CCtextWidth(t) {
@@ -108,19 +137,118 @@ export default class Tree {
   }
 
   resizeCanvas(w, h) {
-    this.canvas.width = w;
-    this.canvas.height = h;
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight - document.getElementById("canvas").getBoundingClientRect().top;
+    // this.canvas.height = h;
 
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.context.setTransform(1, 0, 0, 1, 0, 0);
+    // this.context.setTransform(1, 0, 0, 1, 0, 0);
     this.context.textAlign = "center";
     this.context.textBaseline = "top";
 
-    this.context.translate(0, this.fontSize / 2);
+    // this.context.translate(0, this.fontSize / 2);
+
+    const ctx = this.context;
+    // this.canvas.width = window.innerWidth;
+    this.context.width = this.canvas.width;
+    // console.log(window.innerWidth, this.canvas.width, this.context.width);
+    // canvas.height = window.innerHeight;
+
+    // Translate to the canvas centre before zooming - so you'll always zoom on what you're looking directly at
+    // ctx.translate(window.innerWidth / 2, window.innerHeight / 2);
+    ctx.scale(this.cameraZoom, this.cameraZoom);
+    ctx.translate(
+      -window.innerWidth / 2 + this.cameraOffset.x,
+      -window.innerHeight / 2 + this.cameraOffset.y
+    );
+    // ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    // ctx.fillStyle = "#991111";
+    // this.drawRect(ctx, 50, 50, 100, 100);
   }
 
-  draw(syntax_tree) {
-    const drawables = drawableFromNode(this, syntax_tree);
+  // Gets the relevant location from a mouse or single touch event
+  getEventLocation(e) {
+    if (e.touches && e.touches.length == 1) {
+      return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    } else if (e.clientX && e.clientY) {
+      return { x: e.clientX, y: e.clientY };
+    }
+  }
+
+  onPointerDown(e) {
+    this.isDragging = true;
+    this.dragStart.x =
+      this.getEventLocation(e).x / this.cameraZoom - this.cameraOffset.x;
+    this.dragStart.y =
+      this.getEventLocation(e).y / this.cameraZoom - this.cameraOffset.y;
+  }
+
+  onPointerUp(e) {
+    this.isDragging = false;
+    this.initialPinchDistance = null;
+    this.lastZoom = this.cameraZoom;
+  }
+
+  onPointerMove(e) {
+    if (this.isDragging) {
+      this.cameraOffset.x =
+        this.getEventLocation(e).x / this.cameraZoom - this.dragStart.x;
+      this.cameraOffset.y =
+        this.getEventLocation(e).y / this.cameraZoom - this.dragStart.y;
+      this.draw(this.syntaxTree);
+    }
+  }
+
+  handleTouch(e, singleTouchHandler) {
+    if (e.touches.length == 1) {
+      singleTouchHandler(e);
+    } else if (e.type == "touchmove" && e.touches.length == 2) {
+      this.isDragging = false;
+      this.handlePinch(e);
+    }
+  }
+
+  handlePinch(e) {
+    e.preventDefault();
+
+    let touch1 = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    let touch2 = { x: e.touches[1].clientX, y: e.touches[1].clientY };
+
+    // This is distance squared, but no need for an expensive sqrt as it's only used in ratio
+    let currentDistance =
+      (touch1.x - touch2.x) ** 2 + (touch1.y - touch2.y) ** 2;
+
+    if (this.initialPinchDistance == null) {
+      this.initialPinchDistance = currentDistance;
+    } else {
+      this.adjustZoom(null, currentDistance / initialPinchDistance);
+    }
+  }
+
+  adjustZoom(zoomAmount, zoomFactor) {
+    if (!this.isDragging) {
+      if (zoomAmount) {
+        this.cameraZoom -= zoomAmount;
+      } else if (zoomFactor) {
+        this.cameraZoom = zoomFactor * this.lastZoom;
+      }
+
+      this.cameraZoom = Math.min(this.cameraZoom, MAX_ZOOM);
+      this.cameraZoom = Math.max(this.cameraZoom, MIN_ZOOM);
+
+      this.draw(this.syntaxTree);
+    }
+  }
+
+  drawRect(ctx, x, y, width, height) {
+    ctx.fillRect(x, y, width, height);
+  }
+
+  draw(syntaxTree) {
+    this.syntaxTree = syntaxTree;
+
+    //draw
+    const drawables = drawableFromNode(this, this.syntaxTree);
     const max_depth = getMaxDepth(drawables);
     if (this.alignTerminals) moveLeafsToBottom(drawables, max_depth);
     if (this.subscript) calculateAutoSubscript(drawables);
@@ -157,13 +285,13 @@ export default class Tree {
       fillStyle: terminalCoincidesWithRule
         ? this.terminalColor
         : this.ruleColor,
-      text: drawable.rule,
+      text: drawable.rule.replace(/_/g,'-'),
       x: getDrawableCenter(drawable),
       y: terminalCoincidesWithRule ? drawable.top + 7 : drawable.top - 7,
       italic: true,
     });
 
-    this.drawSubscript(drawable);
+    // this.drawSubscript(drawable);
 
     if (!terminalCoincidesWithRule) {
       this.CCtext({
@@ -186,7 +314,7 @@ export default class Tree {
       1 + getDrawableCenter(drawable) + this.CCtextWidth(drawable.rule) / 2;
     offset += this.CCtextWidth(drawable.subscript) / 2;
     this.CCtext({
-      fillStyle: '#666',
+      fillStyle: "#666",
       text: drawable.subscript,
       x: offset,
       y: drawable.top + this.fontSize / 2 - 9,
