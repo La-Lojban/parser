@@ -18,12 +18,13 @@ function runParse(text) {
   clearElement("cy");
   // clearElement('navigator');
 
-  text = text.replace(/\./g,' ').replace(/ {2,}/g,' ');
+  text = text.replace(/\./g, " ").replace(/ {2,}/g, " ");
+  const parseResult = parse(text, { ...opts });
   if (opts.layout.renderer === "NLPTree")
-    renderNLPTree({ options: opts, data: parse(text, { ...opts }) });
+    renderNLPTree({ options: opts, data: parseResult });
   else if (opts.layout.renderer === "three.js")
-    render3DGraph({ options: opts, data: parse(text, { ...opts }) });
-  else renderGraph({ options: opts, data: parse(text, { ...opts }) });
+    render3DGraph({ options: opts, data: parseResult });
+  else renderGraph({ options: opts, data: parseResult });
   localStorage.setItem("input", text);
 }
 
@@ -40,9 +41,9 @@ document.getElementById("example2").addEventListener("click", (e) => {
   runParse(examples["2"]);
 });
 
-// document.getElementById("compactor").addEventListener("change", (e) => {
-//   compactor();
-// });
+document.getElementById("compactor").addEventListener("change", (e) => {
+  compactor();
+});
 
 const layouter = document.getElementById("layouter");
 Object.keys(layouts).forEach((name) => {
@@ -91,18 +92,18 @@ function setLayout(newValue) {
 function compactor() {
   const value = document.getElementById("compactor").value;
   switch (value) {
-    case "stress":
-      opts = {
-        ...optionsDefault,
-        ...optionsStress,
-        layout: opts.layout,
-        morphemes: true,
-      };
-      break;
-    case "compact-all":
-      opts = { ...optionsDefault, layout: opts.layout, morphemes: false };
-      opts.importantNodes = [];
-      break;
+    // case "stress":
+    //   opts = {
+    //     ...optionsDefault,
+    //     ...optionsStress,
+    //     layout: opts.layout,
+    //     morphemes: true,
+    //   };
+    //   break;
+    // case "compact-all":
+    //   opts = { ...optionsDefault, layout: opts.layout, morphemes: false };
+    //   opts.importantNodes = [];
+    //   break;
     case "up-to-lexemes":
       opts = {
         ...optionsDefault,
@@ -119,7 +120,6 @@ function compactor() {
         morphemes: true,
       };
       break;
-    case "compact":
     default:
       opts = { ...optionsDefault, layout: opts.layout, morphemes: false };
       break;

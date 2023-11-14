@@ -88,7 +88,15 @@ function getNodesNEdges(obj, opts) {
           });
       }
 
-      const parent = containsMorphemes ? "group" + node_id : undefined;
+      let parent;
+
+      if (containsMorphemes) {
+        if (!opts.morphemes) {
+          leaf.children = [];
+        } else {
+          parent = "group" + node_id;
+        }
+      }
 
       //add our node
       arr.push(
