@@ -11,8 +11,8 @@ function normalizeChildren(leaf, opts) {
     if (typeof children === "string") children = [];
     children = Array.isArray(children) ? children : [children];
     children = children.flat(Infinity).filter((_) => _?.rule);
-    return { ...leaf, children };
   }
+  return { ...leaf, children };
 }
 
 function eachRecursive(leaf, { parentLeaf, node_id, pics }, opts) {
@@ -44,6 +44,11 @@ function eachRecursive(leaf, { parentLeaf, node_id, pics }, opts) {
         leaf = normalizeChildren(leaf, opts);
       }
 
+    leaf.children = Array.isArray(leaf.children)
+      ? leaf.children
+      : leaf.children
+      ? [leaf.children]
+      : [];
     leaf.children = leaf.children.flat(Infinity).filter((_) => _?.rule) ?? [];
     //add parent key to each child
     leaf.children = leaf.children.map((child) => ({
