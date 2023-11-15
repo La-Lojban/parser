@@ -15,6 +15,14 @@ function normalizeChildren(leaf, opts) {
   return { ...leaf, children };
 }
 
+function cleanUpChildren(children) {
+  if (typeof children === "string") children = [];
+  children = children ? (Array.isArray(children) ? children : [children]) : [];
+  return children
+    .filter(Boolean)
+    .filter((child) => !(Array.isArray(child) && child.length === 0));
+}
+
 function eachRecursive(leaf, { parentLeaf, node_id, pics }, opts) {
   if (typeof leaf.rule === "undefined") return leaf;
   leaf.type = parentLeaf ? "NODE" : "ROOT";
@@ -32,16 +40,18 @@ function eachRecursive(leaf, { parentLeaf, node_id, pics }, opts) {
     leaf.children = [];
   } else {
     leaf = normalizeChildren(leaf, opts);
+    leaf.children = cleanUpChildren(leaf.children);
 
     //remove intermediate nodes
     if (opts.removeIntermediateNodes)
       while (
         leaf.children.length === 1 &&
-        !opts.importantNodes.includes(leaf.children[0].rule) &&
-        (leaf.children[0].children ?? []).length > 0
+        !opts.importantNodes
+          .concat(opts.hyperedgeRules)
+          .includes(leaf.children[0].rule) &&
+        cleanUpChildren(leaf.children[0].children).length > 0
       ) {
-        leaf.children = leaf.children[0].children;
-        leaf = normalizeChildren(leaf, opts);
+        leaf.children = cleanUpChildren(leaf.children[0].children);
       }
 
     leaf.children = Array.isArray(leaf.children)
@@ -50,6 +60,7 @@ function eachRecursive(leaf, { parentLeaf, node_id, pics }, opts) {
       ? [leaf.children]
       : [];
     leaf.children = leaf.children.flat(Infinity).filter((_) => _?.rule) ?? [];
+
     //add parent key to each child
     leaf.children = leaf.children.map((child) => ({
       ...child,
