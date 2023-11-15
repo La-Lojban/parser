@@ -34,7 +34,7 @@ export const optionsDefault = {
     "indicator",
     "BRIVLA",
   ],
-  pictureRules: ["BRIVLA_pre"],
+  pictureRules: ["BRIVLA"],
   hyperedgeRules: ["spaces","gismu","fuhivla","CMEVLA","brivla"],
 };
 

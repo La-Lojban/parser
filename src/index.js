@@ -6,7 +6,12 @@ import { render3DGraph } from "./renderers/three";
 import { clearElement, destroyAll } from "./renderers/common";
 import { renderNLPTree } from "./renderers/syntax-tree";
 
-let opts = { ...optionsDefault, layout: layouts.dagreH };
+let opts = {
+  ...optionsDefault,
+  removeIntermediateNodes: true,
+  layout: layouts.dagreH,
+  morphemes: false,
+};
 
 if (module.hot) {
   module.hot.accept();
@@ -100,15 +105,18 @@ function compactor() {
     //     morphemes: true,
     //   };
     //   break;
-    // case "compact-all":
-    //   opts = { ...optionsDefault, layout: opts.layout, morphemes: false };
-    //   opts.importantNodes = [];
-    //   break;
+    case "compact-all":
+      opts = {
+        ...optionsDefault,
+        layout: opts.layout,
+        removeIntermediateNodes: true,
+        morphemes: false,
+      };
+      break;
     case "up-to-lexemes":
       opts = {
         ...optionsDefault,
         layout: opts.layout,
-        startRule: "text",
         morphemes: false,
       };
       break;
@@ -116,12 +124,16 @@ function compactor() {
       opts = {
         ...optionsDefault,
         layout: opts.layout,
-        startRule: "text",
         morphemes: true,
       };
       break;
     default:
-      opts = { ...optionsDefault, layout: opts.layout, morphemes: false };
+      opts = {
+        ...optionsDefault,
+        layout: opts.layout,
+        removeIntermediateNodes: true,
+        morphemes: false,
+      };
       break;
   }
   localStorage.setItem("compactor", value);

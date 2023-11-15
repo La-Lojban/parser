@@ -16,6 +16,14 @@ const number2ColorHue = (number) => Math.floor(((number * 360) / 7.618) % 360);
 const bgString2Int = (number, { s = "90%", l = "80%" }) =>
   `hsl(${number2ColorHue(hashCode(number))},${s},${l})`;
 
+function cleanUpChildren(children) {
+  if (typeof children === "string") children = [];
+  children = children ? (Array.isArray(children) ? children : [children]) : [];
+  return children
+    .filter(Boolean)
+    .filter((child) => !(Array.isArray(child) && child.length === 0));
+}
+
 function getNodesNEdges(obj, opts) {
   if (opts.layout.renderer === "NLPTree") return getNLPTree(obj, opts);
   const generate =
@@ -45,20 +53,17 @@ function getNodesNEdges(obj, opts) {
       } else if (!opts.morphemes && regexpCompressPointyRules.test(leaf.rule)) {
         leaf.children = [];
       } else {
-        leaf.children = leaf.children.flat(Infinity).filter(Boolean);
-        // .filter((_) => typeof _.rule === "undefined");
+        leaf.children = cleanUpChildren(leaf.children.flat(Infinity));
 
         //remove intermediate nodes
         if (opts.removeIntermediateNodes)
           while (
             leaf.children.length === 1 &&
-            !opts.importantNodes.includes(leaf.children[0].rule) &&
-            (leaf.children[0].children ?? []).length > 0
+            !(opts.importantNodes.concat(opts.hyperedgeRules)).includes(leaf.children[0].rule) &&
+            (cleanUpChildren(leaf.children[0].children)).length > 0
           ) {
-            leaf.children = leaf.children[0].children ?? [];
+            leaf.children = cleanUpChildren(leaf.children[0].children);
           }
-
-        if (typeof leaf.children === "string") leaf.children = [];
 
         //add parent key to each child
         leaf.children = leaf.children.map((child) => ({
