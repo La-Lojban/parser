@@ -1,45 +1,26 @@
 import Tree from "./tree";
 
-function normalizeChildren(leaf, opts) {
-  let children = leaf.children ?? [];
-  if (
-    opts.lowNodes?.includes(leaf.rule) ||
-    (!opts.morphemes &&
-      /^([A-Z]+[0-9]*|comma\b|comma2\b|period\b|end\b)/.test(leaf.rule))
-  ) {
-    children = [];
-    if (typeof children === "string") children = [];
-    children = Array.isArray(children) ? children : [children];
-    children = children.flat(Infinity).filter((_) => _?.rule);
-  }
-  return { ...leaf, children };
-}
-
 function cleanUpChildren(children) {
   if (typeof children === "string") children = [];
   children = children ? (Array.isArray(children) ? children : [children]) : [];
   return children
+    .flat(Infinity)
     .filter(Boolean)
-    .filter((child) => !(Array.isArray(child) && child.length === 0));
+    .filter((child) => !(Array.isArray(child) && child.length === 0))
+    .flat(Infinity);
 }
 
 function eachRecursive(leaf, { parentLeaf, node_id, pics }, opts) {
-  if (typeof leaf.rule === "undefined") return leaf;
+  if (typeof leaf.rule === "undefined") return;
   leaf.type = parentLeaf ? "NODE" : "ROOT";
-  if (!leaf.rule) return leaf;
   //add id prop to this leaf
   leaf.id = node_id.num;
   node_id.num = node_id.num + 1;
 
   //prettify leaf's children
-  if (
-    opts.lowNodes?.includes(leaf.rule) ||
-    (!opts.morphemes &&
-      /^([A-Z]+[0-9]*|comma\b|comma2\b|period\b|end\b)/.test(leaf.rule))
-  ) {
+  if (opts.lowNodes?.includes(leaf.rule)) {
     leaf.children = [];
   } else {
-    leaf = normalizeChildren(leaf, opts);
     leaf.children = cleanUpChildren(leaf.children);
 
     //remove intermediate nodes
@@ -54,12 +35,7 @@ function eachRecursive(leaf, { parentLeaf, node_id, pics }, opts) {
         leaf.children = cleanUpChildren(leaf.children[0].children);
       }
 
-    leaf.children = Array.isArray(leaf.children)
-      ? leaf.children
-      : leaf.children
-      ? [leaf.children]
-      : [];
-    leaf.children = leaf.children.flat(Infinity).filter((_) => _?.rule) ?? [];
+    leaf.children = cleanUpChildren(leaf.children);
 
     //add parent key to each child
     leaf.children = leaf.children.map((child) => ({
@@ -74,6 +50,24 @@ function eachRecursive(leaf, { parentLeaf, node_id, pics }, opts) {
     !parentLeaf?.pic && opts.pictureRules.includes(leaf.rule) && pics[leaf.text]
       ? encodeURIComponent(pics[leaf.text])
       : undefined;
+
+  //check if this rule contains morphemes
+  let containsMorphemes;
+  containsMorphemes = opts.hyperedgeRules.includes(leaf.rule);
+  if (!containsMorphemes)
+    leaf.children.forEach((child) => {
+      if (RegExp("^[a-z' .]$").test(child.rule)) containsMorphemes = true;
+    });
+
+  let parent;
+
+  if (containsMorphemes) {
+    if (!opts.morphemes) {
+      leaf.children = [];
+    } else {
+      parent = "group" + node_id;
+    }
+  }
 
   //traverse children
   leaf.children = leaf.children.map((child) =>
@@ -90,6 +84,8 @@ function eachRecursive(leaf, { parentLeaf, node_id, pics }, opts) {
   if (leaf.children.length == 0) {
     leaf.type = "VALUE";
   }
+  leaf.children = cleanUpChildren(leaf.children);
+
   return leaf;
 }
 

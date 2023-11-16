@@ -33,8 +33,11 @@ export const optionsDefault = {
     "indicators",
     "indicator",
     "BRIVLA",
+    "free",
+    "indicators",
+    "indicator"
   ],
-  pictureRules: ["BRIVLA"],
+  pictureRules: ["BRIVLA","indicator","KOhA","GOhA"],
   hyperedgeRules: ["spaces","gismu","fuhivla","CMEVLA","brivla"],
 };
 

@@ -2,6 +2,12 @@
 @import "./loader.scss";
 @import "./group.scss";
 
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
 #cy {
   width: 100%;
   height: calc(100vh - 9rem);
