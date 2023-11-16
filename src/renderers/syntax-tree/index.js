@@ -76,7 +76,7 @@ function eachRecursive(leaf, { parentLeaf, node_id, pics }, opts) {
   if (leaf.children.length == 0) {
     leaf.type = "VALUE";
   }
-  leaf.children = cleanUpChildren(leaf.children);
+  leaf.children = cleanUpChildren(leaf.children, opts);
 
   return leaf;
 }
