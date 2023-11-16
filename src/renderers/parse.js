@@ -3,7 +3,7 @@ import { generate as generateCy } from "./cytoscape";
 import { generate as generateThree } from "./three";
 import { getNLPTree } from "./syntax-tree";
 import { regexpCompressPointyRules } from "../options";
-
+import { cleanUpChildren } from "./utils/fns";
 const hashCode = function (s) {
   return s.split("").reduce(function (a, b) {
     a = (a << 5) - a + b.charCodeAt(0);
@@ -15,16 +15,6 @@ const number2ColorHue = (number) => Math.floor(((number * 360) / 7.618) % 360);
 
 const bgString2Int = (number, { s = "90%", l = "80%" }) =>
   `hsl(${number2ColorHue(hashCode(number))},${s},${l})`;
-
-function cleanUpChildren(children) {
-  if (typeof children === "string") children = [];
-  children = children ? (Array.isArray(children) ? children : [children]) : [];
-  return children
-    .flat(Infinity)
-    .filter(Boolean)
-    .filter((child) => !(Array.isArray(child) && child.length === 0))
-    .flat(Infinity);
-}
 
 function getNodesNEdges(obj, opts) {
   if (opts.layout.renderer === "NLPTree") return getNLPTree(obj, opts);
@@ -42,20 +32,13 @@ function getNodesNEdges(obj, opts) {
     leaf.id = node_id;
     node_id++;
 
-    leaf.children = leaf.children
-      ? Array.isArray(leaf.children)
-        ? leaf.children
-        : [leaf.children]
-      : [];
-
     //prettify leaf's children
     if (opts.lowNodes?.includes(leaf.rule)) {
       leaf.children = [];
     } else if (!opts.morphemes && regexpCompressPointyRules.test(leaf.rule)) {
       leaf.children = [];
     } else {
-      leaf.children = cleanUpChildren(leaf.children);
-
+      leaf.children = cleanUpChildren(leaf.children, opts);
       //remove intermediate nodes
       if (opts.removeIntermediateNodes)
         while (
@@ -63,9 +46,9 @@ function getNodesNEdges(obj, opts) {
           !opts.importantNodes
             .concat(opts.hyperedgeRules)
             .includes(leaf.children[0].rule) &&
-          cleanUpChildren(leaf.children[0].children).length > 0
+          cleanUpChildren(leaf.children[0].children, opts).length > 0
         ) {
-          leaf.children = cleanUpChildren(leaf.children[0].children);
+          leaf.children = cleanUpChildren(leaf.children[0].children, opts);
         }
 
       //add parent key to each child

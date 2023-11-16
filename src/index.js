@@ -9,6 +9,7 @@ import { renderNLPTree } from "./renderers/syntax-tree";
 let opts = {
   ...optionsDefault,
   removeIntermediateNodes: true,
+  removeDeletableNodes: true,
   layout: layouts.dagreH,
   morphemes: false,
 };
@@ -110,6 +111,7 @@ function compactor() {
         ...optionsDefault,
         layout: opts.layout,
         removeIntermediateNodes: true,
+        removeDeletableNodes: true,
         morphemes: false,
       };
       break;

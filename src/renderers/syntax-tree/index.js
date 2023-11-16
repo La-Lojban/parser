@@ -1,14 +1,6 @@
 import Tree from "./tree";
 
-function cleanUpChildren(children) {
-  if (typeof children === "string") children = [];
-  children = children ? (Array.isArray(children) ? children : [children]) : [];
-  return children
-    .flat(Infinity)
-    .filter(Boolean)
-    .filter((child) => !(Array.isArray(child) && child.length === 0))
-    .flat(Infinity);
-}
+import { cleanUpChildren } from "../utils/fns";
 
 function eachRecursive(leaf, { parentLeaf, node_id, pics }, opts) {
   if (typeof leaf.rule === "undefined") return;
@@ -21,7 +13,7 @@ function eachRecursive(leaf, { parentLeaf, node_id, pics }, opts) {
   if (opts.lowNodes?.includes(leaf.rule)) {
     leaf.children = [];
   } else {
-    leaf.children = cleanUpChildren(leaf.children);
+    leaf.children = cleanUpChildren(leaf.children, opts);
 
     //remove intermediate nodes
     if (opts.removeIntermediateNodes)
@@ -30,12 +22,12 @@ function eachRecursive(leaf, { parentLeaf, node_id, pics }, opts) {
         !opts.importantNodes
           .concat(opts.hyperedgeRules)
           .includes(leaf.children[0].rule) &&
-        cleanUpChildren(leaf.children[0].children).length > 0
+        cleanUpChildren(leaf.children[0].children, opts).length > 0
       ) {
-        leaf.children = cleanUpChildren(leaf.children[0].children);
+        leaf.children = cleanUpChildren(leaf.children[0].children, opts);
       }
 
-    leaf.children = cleanUpChildren(leaf.children);
+    leaf.children = cleanUpChildren(leaf.children, opts);
 
     //add parent key to each child
     leaf.children = leaf.children.map((child) => ({
