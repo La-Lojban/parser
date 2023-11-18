@@ -98,14 +98,6 @@ function setLayout(newValue) {
 function compactor() {
   const value = document.getElementById("compactor").value;
   switch (value) {
-    // case "stress":
-    //   opts = {
-    //     ...optionsDefault,
-    //     ...optionsStress,
-    //     layout: opts.layout,
-    //     morphemes: true,
-    //   };
-    //   break;
     case "compact-all":
       opts = {
         ...optionsDefault,
