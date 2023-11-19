@@ -173,13 +173,6 @@ export const optionsDefault = {
   ].map((r) => new RegExp(r)),
 };
 
-export const optionsStress = {
-  removeIntermediateNodes: true,
-  startRule: "text",
-  importantNodes: ["DefaultStressedSyllable", "VowelFinal"],
-  lowNodes: ["DefaultStressedSyllable", "VowelFinal", "Syllable"],
-};
-
 export const layouts = {
   dagreH: {
     label: "Dagre Horizontal",

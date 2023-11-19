@@ -1,6 +1,6 @@
 import { parse } from "./renderers/parse";
 import { renderGraph } from "./renderers/cytoscape";
-import { optionsDefault, optionsStress, layouts, examples } from "./options";
+import { optionsDefault, layouts, examples } from "./options";
 import { render3DGraph } from "./renderers/three";
 
 import { clearElement, destroyAll } from "./renderers/common";
@@ -18,14 +18,14 @@ if (module.hot) {
   module.hot.accept();
 }
 
-function runParse(text) {
+async function runParse(text) {
   if (!window.loaded) return;
   destroyAll();
   clearElement("cy");
   // clearElement('navigator');
 
   text = text.replace(/\./g, " ").replace(/ {2,}/g, " ");
-  const parseResult = parse(text, { ...opts });
+  const parseResult = await parse(text, { ...opts });
   if (opts.layout.renderer === "NLPTree")
     renderNLPTree({ options: opts, data: parseResult });
   else if (opts.layout.renderer === "three.js")

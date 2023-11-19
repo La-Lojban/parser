@@ -1,8 +1,13 @@
-import { parse as pegParse } from "../camxes";
 import { generate as generateCy } from "./cytoscape";
 import { generate as generateThree } from "./three";
 import { getNLPTree } from "./syntax-tree";
 import { eachRecursive, cleanUpAllChildren } from "./utils/fns";
+import * as Comlink from "comlink";
+
+const worker = new Worker(new URL("../worker.js", import.meta.url), {
+  type: "module",
+});
+const pegParse = Comlink.wrap(worker);
 
 function getNodesNEdges(obj, opts) {
   if (opts.layout.renderer === "NLPTree") return getNLPTree(obj, opts);
@@ -17,10 +22,10 @@ function getNodesNEdges(obj, opts) {
   return res.array;
 }
 
-export function parse(text, options) {
+export async function parse(text, options) {
   if (!text) return;
   try {
-    const parsed = pegParse(text, {
+    const parsed = await pegParse(text, {
       startRule: options.startRule || "text",
     });
     const tree = getNodesNEdges(parsed, options);
