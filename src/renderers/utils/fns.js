@@ -14,7 +14,8 @@ export function cleanUpChildren(children, opts) {
     .flat(Infinity);
   if (opts.removeDeletableNodes) {
     children = children.filter(
-      (leaf) => !opts.nodesToDelete.some((rx) => rx.test(leaf.rule))
+      (leaf) =>
+        leaf.text!=='' || !opts.nodesToDelete.some((rx) => rx.test(leaf.rule))
     );
   }
   return children;

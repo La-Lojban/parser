@@ -71,13 +71,13 @@ try {
   document.getElementById("input").value = value ?? examples["2"];
 } catch (error) {}
 
-// try {
-//   const value = localStorage.getItem("compactor");
-//   if (value) {
-//     document.getElementById("compactor").value = value;
-//     compactor(value);
-//   }
-// } catch (error) {}
+try {
+  const value = localStorage.getItem("compactor");
+  if (value) {
+    document.getElementById("compactor").value = value;
+    compactor(value);
+  }
+} catch (error) {}
 
 try {
   const value = localStorage.getItem("layouter");
