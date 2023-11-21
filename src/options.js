@@ -296,4 +296,5 @@ export const layouts = {
 export const examples = {
   1: "ko pinxe fi ti sei mi xalbo .i ti botpi",
   2: "mi tavla do",
+  3: "ui nai cai ro'u dai",
 };

@@ -38,13 +38,11 @@ document.getElementById("input").addEventListener("keyup", (e) => {
   runParse(e.target.value);
 });
 
-document.getElementById("example1").addEventListener("click", (e) => {
-  document.getElementById("input").value = examples["1"];
-  runParse(examples["1"]);
-});
-document.getElementById("example2").addEventListener("click", (e) => {
-  document.getElementById("input").value = examples["2"];
-  runParse(examples["2"]);
+Object.keys(examples).forEach((key) => {
+  document.getElementById(`example${key}`).addEventListener("click", (e) => {
+    document.getElementById("input").value = examples[key];
+    runParse(examples[key]);
+  });
 });
 
 document.getElementById("compactor").addEventListener("change", (e) => {
