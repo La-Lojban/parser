@@ -33,6 +33,7 @@ async function runParse(text) {
   else renderGraph({ options: opts, data: parseResult });
   localStorage.setItem("input", text);
   history.pushState(null, null, `#${encodeURIComponent(text.replace(/ /g,'_'))}`)
+  document.title = text? `${text} - Visual Lojban` : `Visual Lojban`
 }
 
 document.getElementById("input").addEventListener("keyup", (e) => {
