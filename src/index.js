@@ -32,6 +32,7 @@ async function runParse(text) {
     render3DGraph({ options: opts, data: parseResult });
   else renderGraph({ options: opts, data: parseResult });
   localStorage.setItem("input", text);
+  history.pushState(null, null, `#${encodeURIComponent(text.replace(/ /g,'_'))}`)
 }
 
 document.getElementById("input").addEventListener("keyup", (e) => {
@@ -136,7 +137,7 @@ window.loaded = false;
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("loader").remove();
   document.getElementById("cy").classList.remove("d-none");
-  const query = decodeURI(window.location.search).replace("?", "");
+  const query = decodeURI(window.location.hash).replace("#", "").replace(/_/g,' ');
   if (query != null && query.length > 2)
     document.getElementById("input").value = query;
   window.loaded = true;
