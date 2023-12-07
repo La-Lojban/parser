@@ -32,8 +32,16 @@ async function runParse(text) {
     render3DGraph({ options: opts, data: parseResult });
   else renderGraph({ options: opts, data: parseResult });
   localStorage.setItem("input", text);
-  history.pushState(null, null, `#${encodeURIComponent(text.replace(/ /g,'_'))}`)
-  document.title = text? `${text} - Visual Lojban` : `Visual Lojban`
+  history.pushState(
+    null,
+    null,
+    `#${jsonToQueryString({
+      q: text.replace(/ /g, "_"),
+      l: document.getElementById("layouter").value,
+      c: document.getElementById("compactor").value,
+    })}`
+  );
+  document.title = text ? `${text} - Visual Lojban` : `Visual Lojban`;
 }
 
 document.getElementById("input").addEventListener("keyup", (e) => {
@@ -134,13 +142,43 @@ function compactor() {
   runParse(document.getElementById("input").value);
 }
 
+function parseUrlParamsToJSON(url) {
+  try {
+    const urlParams = new URLSearchParams(url.split("#")[1]);
+    let params = Object.fromEntries(urlParams);
+    if (Object.keys(params).length === 1) {
+      const val = Object.keys(params)[0];
+      if (params[val] === "") params = { q: val };
+    }
+    return params;
+  } catch (error) {
+    return { q: "" };
+  }
+}
+
+function jsonToQueryString(json) {
+  try {
+    return Object.keys(json)
+      .map(
+        (key) => `${encodeURIComponent(key)}=${encodeURIComponent(json[key])}`
+      )
+      .join("&");
+  } catch (error) {
+    return "";
+  }
+}
+
 window.loaded = false;
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("loader").remove();
   document.getElementById("cy").classList.remove("d-none");
-  const query = decodeURI(window.location.hash).replace("#", "").replace(/_/g,' ');
-  if (query != null && query.length > 2)
-    document.getElementById("input").value = query;
+  const queryParams = parseUrlParamsToJSON(
+    window.location.hash.replace(/_/g, " ")
+  );
+  if (queryParams.q !== "")
+    document.getElementById("input").value = queryParams.q;
+  if (queryParams.c) document.getElementById("compactor").value = queryParams.c;
+  if (queryParams.l) document.getElementById("layouter").value = queryParams.l;
   window.loaded = true;
   runParse(document.getElementById("input").value);
 });
