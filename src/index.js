@@ -150,7 +150,7 @@ function parseUrlParamsToJSON(url) {
       const val = Object.keys(params)[0];
       if (params[val] === "") params = { q: val };
     }
-    return params;
+    return { q: "", ...params };
   } catch (error) {
     return { q: "" };
   }
