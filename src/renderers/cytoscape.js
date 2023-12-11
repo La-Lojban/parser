@@ -236,7 +236,7 @@ export function renderGraph({ data, options }) {
           height: getHeight,
           width: getWidth,
           padding: getPadding,
-          visibility: "hidden",
+          // visibility: "hidden",
           // width: "displayName",
           // shape: "roundrectangle",
           // "padding-relative-to": "width",

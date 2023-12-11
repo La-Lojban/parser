@@ -122,6 +122,7 @@ body {
 }
 
 .cyNode-pentagon-parent {
+  //clip-path: polygon(0% 50%, 38% 0%, 100% 18%, 100% 82%, 38% 100%);
   clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
   background: #333637;
   > div {
