@@ -13,12 +13,25 @@ export function cleanUpChildren(children, opts) {
     )
     .flat(Infinity);
   if (opts.removeDeletableNodes) {
-    children = children.filter(
-      (leaf) =>
-        leaf.text !== "" && !opts.nodesToDelete.some((rx) => rx.test(leaf.rule))
-    );
+    children = children.reduce((newChildren, leaf) => {
+      if (leaf.text.trim() == "") {
+        return newChildren;
+      } else if (opts.nodesToDelete.some((rx) => rx.test(leaf.rule))) {
+        if (!Array.isArray(leaf.children)) leaf.children = [leaf.children];
+        newChildren.push(
+          ...(leaf.children || []).filter((child) => child.text.trim() !== "")
+        );
+      } else {
+        newChildren.push(leaf);
+      }
+      return newChildren;
+    }, []);
+    // children = children.filter(
+    //   (leaf) =>
+    //     leaf.text !== "" && !opts.nodesToDelete.some((rx) => rx.test(leaf.rule))
+    // );
   }
-  return children;
+  return children ?? [];
 }
 
 const hashCode = (s) =>

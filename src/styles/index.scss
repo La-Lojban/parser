@@ -73,7 +73,7 @@ body {
   cursor: pointer;
 }
 
-.cyNode-parallelogram {
+.cyNode-KU {
   /* width: 170px; */
   min-height: 60px;
   /* min-height: 60px; */
@@ -91,12 +91,97 @@ body {
   border-color: #333637;
   cursor: pointer;
   transform: skew(20deg);
-}
-.cyNode-parallelogram div,
-.cyNode-parallelogram span {
-  transform: skew(-20deg);
+  div,
+  span {
+    transform: skew(-20deg);
+  }
 }
 
+.cyNode-LE {
+  /* width: 170px; */
+  min-height: 60px;
+  /* min-height: 60px; */
+  padding: 8px;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  color: white;
+  /* background-color: #CECECE; */
+  border-radius: 5px;
+  box-shadow: 3px 3px 3px rgba(68, 68, 68, 0.6);
+  color: #333637;
+  font-weight: 700;
+  border-style: solid;
+  border-color: #333637;
+  cursor: pointer;
+  transform: skew(-20deg);
+  div,
+  span {
+    transform: skew(20deg);
+  }
+}
+
+.cyNode-pentagon-parent {
+  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+  background: #333637;
+  > div {
+    /* width: 170px; */
+    min-height: 60px;
+    /* min-height: 60px; */
+    // padding: 8px;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    color: white;
+    /* background-color: #CECECE; */
+    // border-radius: 5px;
+    box-shadow: 3px 3px 3px rgba(68, 68, 68, 0.6);
+    color: #333637;
+    font-weight: 700;
+    // border-style: solid;
+    // border-color: #333637;
+    cursor: pointer;
+
+    width: var(--s);
+    margin: var(--m);
+    padding: 20px;
+    // height: calc(var(--s) * 1.1547);
+    display: inline-block;
+    font-size: initial; /* we reset the font-size if we want to add some content */
+    clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+  }
+}
+
+.cyNode-hexagon-parent {
+  clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%);
+  background: #333637;
+  > div {
+    /* width: 170px; */
+    min-height: 60px;
+    /* min-height: 60px; */
+    // padding: 8px;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    color: white;
+    /* background-color: #CECECE; */
+    // border-radius: 5px;
+    box-shadow: 3px 3px 3px rgba(68, 68, 68, 0.6);
+    color: #333637;
+    font-weight: 700;
+    // border-style: solid;
+    // border-color: #333637;
+    cursor: pointer;
+
+    width: var(--s);
+    margin: var(--m);
+    padding: 20px;
+    height: calc(var(--s) * 1.1547);
+    display: inline-block;
+    font-size: initial; /* we reset the font-size if we want to add some content */
+    clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%);
+  }
+}
 
 .cyNode-rhombus-parent {
   // filter: drop-shadow(1em 0em 0em black) drop-shadow(-1em 0em 0em black)
@@ -105,65 +190,102 @@ body {
   //   drop-shadow(-1em 1em 0em black) drop-shadow(1em -1em 0em black);
   clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
   background: #333637;
+  > div {
+    /* width: 170px; */
+    min-height: 60px;
+    /* min-height: 60px; */
+    // padding: 8px;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    color: white;
+    /* background-color: #CECECE; */
+    // border-radius: 5px;
+    box-shadow: 3px 3px 3px rgba(68, 68, 68, 0.6);
+    color: #333637;
+    font-weight: 700;
+    // border-style: solid;
+    // border-color: #333637;
+    cursor: pointer;
+
+    width: var(--s);
+    margin: var(--m);
+    padding: 20px;
+    height: calc(var(--s));
+    display: inline-block;
+    font-size: initial; /* we reset the font-size if we want to add some content */
+    clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  }
 }
 
-.cyNode-hexagon-parent {
-  clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%);
+.cyNode-left-parent {
+  // filter: drop-shadow(1em 0em 0em black) drop-shadow(-1em 0em 0em black)
+  //   drop-shadow(0em 1em 0em black) drop-shadow(0em -1em 0em black)
+  //   drop-shadow(1em 1em 0em black) drop-shadow(-1em -1em 0em black)
+  //   drop-shadow(-1em 1em 0em black) drop-shadow(1em -1em 0em black);
+  clip-path: polygon(25% 0%, 100% 1%, 100% 100%, 25% 100%, 0% 50%);
   background: #333637;
+  > div {
+    /* width: 170px; */
+    min-height: 60px;
+    /* min-height: 60px; */
+    // padding: 8px;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    color: white;
+    /* background-color: #CECECE; */
+    // border-radius: 5px;
+    box-shadow: 3px 3px 3px rgba(68, 68, 68, 0.6);
+    color: #333637;
+    font-weight: 700;
+    // border-style: solid;
+    // border-color: #333637;
+    cursor: pointer;
+
+    width: var(--s);
+    margin: var(--m);
+    padding: 20px;
+    height: calc(var(--s));
+    display: inline-block;
+    font-size: initial; /* we reset the font-size if we want to add some content */
+    clip-path: polygon(25% 0%, 100% 1%, 100% 100%, 25% 100%, 0% 50%);
+  }
 }
 
-.cyNode-hexagon {
-  /* width: 170px; */
-  min-height: 60px;
-  /* min-height: 60px; */
-  // padding: 8px;
-  flex-direction: column;
-  text-align: center;
-  justify-content: center;
-  color: white;
-  /* background-color: #CECECE; */
-  // border-radius: 5px;
-  box-shadow: 3px 3px 3px rgba(68, 68, 68, 0.6);
-  color: #333637;
-  font-weight: 700;
-  // border-style: solid;
-  // border-color: #333637;
-  cursor: pointer;
+.cyNode-right-parent {
+  // filter: drop-shadow(1em 0em 0em black) drop-shadow(-1em 0em 0em black)
+  //   drop-shadow(0em 1em 0em black) drop-shadow(0em -1em 0em black)
+  //   drop-shadow(1em 1em 0em black) drop-shadow(-1em -1em 0em black)
+  //   drop-shadow(-1em 1em 0em black) drop-shadow(1em -1em 0em black);
+  clip-path: polygon(0% 0%, 75% 0%, 100% 50%, 75% 100%, 0% 100%);
+  background: #333637;
+  > div {
+    /* width: 170px; */
+    min-height: 60px;
+    /* min-height: 60px; */
+    // padding: 8px;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    color: white;
+    /* background-color: #CECECE; */
+    // border-radius: 5px;
+    box-shadow: 3px 3px 3px rgba(68, 68, 68, 0.6);
+    color: #333637;
+    font-weight: 700;
+    // border-style: solid;
+    // border-color: #333637;
+    cursor: pointer;
 
-  width: var(--s);
-  margin: var(--m);
-  padding: 20px;
-  height: calc(var(--s) * 1.1547);
-  display: inline-block;
-  font-size: initial; /* we reset the font-size if we want to add some content */
-  clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%);
-}
-
-.cyNode-rhombus {
-  /* width: 170px; */
-  min-height: 60px;
-  /* min-height: 60px; */
-  // padding: 8px;
-  flex-direction: column;
-  text-align: center;
-  justify-content: center;
-  color: white;
-  /* background-color: #CECECE; */
-  // border-radius: 5px;
-  box-shadow: 3px 3px 3px rgba(68, 68, 68, 0.6);
-  color: #333637;
-  font-weight: 700;
-  // border-style: solid;
-  // border-color: #333637;
-  cursor: pointer;
-
-  width: var(--s);
-  margin: var(--m);
-  padding: 20px;
-  height: calc(var(--s));
-  display: inline-block;
-  font-size: initial; /* we reset the font-size if we want to add some content */
-  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+    width: var(--s);
+    margin: var(--m);
+    padding: 20px;
+    height: calc(var(--s));
+    display: inline-block;
+    font-size: initial; /* we reset the font-size if we want to add some content */
+    clip-path: polygon(0% 0%, 75% 0%, 100% 50%, 75% 100%, 0% 100%);
+  }
 }
 
 .nodeTitle {
