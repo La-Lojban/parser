@@ -6,6 +6,7 @@ import cise from "cytoscape-cise";
 // import cola from "cytoscape-cola";
 import elk from "cytoscape-elk";
 import { getState, setState } from "./common";
+import { cyNodeForm } from "./utils/fns";
 // import "cytoscape-context-menus/cytoscape-context-menus.css";
 // import "cytoscape-navigator/cytoscape.js-navigator.css";
 
@@ -177,7 +178,7 @@ export function renderGraph({ data, options }) {
       {
         selector: "edge",
         style: {
-              "line-color": "#aaa",
+          "line-color": "#aaa",
           "curve-style": "bezier",
           // "curve-style": "taxi",
           width: 2,
@@ -207,7 +208,7 @@ export function renderGraph({ data, options }) {
           "text-wrap": "none",
           "text-max-width": "75px",
           padding: "16px",
-          "padding-relative-to": "width"
+          "padding-relative-to": "width",
         },
       },
       {
@@ -235,8 +236,9 @@ export function renderGraph({ data, options }) {
           height: getHeight,
           width: getWidth,
           padding: getPadding,
+          visibility: "hidden",
           // width: "displayName",
-          shape: "roundrectangle",
+          // shape: "roundrectangle",
           // "padding-relative-to": "width",
           // ghost: "yes",
           // "ghost-offset-x": 1,
@@ -340,7 +342,8 @@ export function renderGraph({ data, options }) {
       valignBox: "center",
       // halignBox: "left",
       tpl: (data) => {
-        return `<div class="cyNode" style="background-color: ${data.color}">
+        return `<div class="${cyNodeForm(data)}-parent">
+        <div class="${cyNodeForm(data)}" style="background-color: ${data.color}">
         <div class="nodeTitle trim">${data.rule}</div>
         ${
           data.pic
@@ -353,6 +356,7 @@ export function renderGraph({ data, options }) {
           ${data.text || "&nbsp;"}
         </span>
         <div class="goggleBtn" collapse="${data.collapse}">+</div>
+      </div>
       </div>
       `;
       },

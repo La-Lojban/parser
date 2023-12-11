@@ -1,4 +1,4 @@
-import { regexpCompressPointyRules } from "../../options";
+import { cyNodeForms, regexpCompressPointyRules } from "../../options";
 
 export function cleanUpChildren(children, opts) {
   if (typeof children === "string") children = [];
@@ -49,6 +49,12 @@ export function cleanUpAllChildren(leaf, opts) {
     .map((child) => cleanUpAllChildren(child, opts))
     .filter(Boolean);
   return leaf;
+}
+
+export function cyNodeForm(node) {
+  const candidate = cyNodeForms[node.rule];
+  if (candidate !== undefined) return `cyNode-${candidate}`;
+  return "cyNode";
 }
 
 export function eachRecursive(

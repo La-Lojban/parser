@@ -160,7 +160,7 @@ export const optionsDefault = {
     "BRIVLA",
     "free",
     "indicators",
-    "indicator",
+    "INDICATOR",
     "UI1",
     "UI2",
     "UI3",
@@ -181,6 +181,23 @@ export const optionsDefault = {
     "_post$",
   ].map((r) => new RegExp(r)),
 };
+
+export const cyNodeForms = {
+  KOhA: 'round',
+  UI1: 'parallelogram',
+  UI2: 'parallelogram',
+  UI3: 'parallelogram',
+  UI4: 'parallelogram',
+  UI5: 'parallelogram',
+  UI6: 'parallelogram',
+  UI7: 'parallelogram',
+  PEI: 'parallelogram',
+  GEhE: 'parallelogram',
+  NAI: 'parallelogram',
+  CAI: 'parallelogram',
+  I: 'hexagon',
+  BAI: 'rhombus',
+}
 
 export const layouts = {
   dagreH: {

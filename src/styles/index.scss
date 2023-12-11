@@ -2,10 +2,13 @@
 @import "./loader.scss";
 @import "./group.scss";
 
-html, body {
+html,
+body {
   margin: 0;
   height: 100%;
   overflow: hidden;
+  --s: 100px; /* size  */
+  --m: 3px; /* margin */
 }
 
 #cy {
@@ -49,6 +52,118 @@ body {
   border-style: solid;
   border-color: #333637;
   cursor: pointer;
+}
+
+.cyNode-round {
+  /* width: 170px; */
+  min-height: 60px;
+  /* min-height: 60px; */
+  padding: 8px;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  color: white;
+  /* background-color: #CECECE; */
+  border-radius: 500px;
+  box-shadow: 3px 3px 3px rgba(68, 68, 68, 0.6);
+  color: #333637;
+  font-weight: 700;
+  border-style: solid;
+  border-color: #333637;
+  cursor: pointer;
+}
+
+.cyNode-parallelogram {
+  /* width: 170px; */
+  min-height: 60px;
+  /* min-height: 60px; */
+  padding: 8px;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  color: white;
+  /* background-color: #CECECE; */
+  border-radius: 5px;
+  box-shadow: 3px 3px 3px rgba(68, 68, 68, 0.6);
+  color: #333637;
+  font-weight: 700;
+  border-style: solid;
+  border-color: #333637;
+  cursor: pointer;
+  transform: skew(20deg);
+}
+.cyNode-parallelogram div,
+.cyNode-parallelogram span {
+  transform: skew(-20deg);
+}
+
+
+.cyNode-rhombus-parent {
+  // filter: drop-shadow(1em 0em 0em black) drop-shadow(-1em 0em 0em black)
+  //   drop-shadow(0em 1em 0em black) drop-shadow(0em -1em 0em black)
+  //   drop-shadow(1em 1em 0em black) drop-shadow(-1em -1em 0em black)
+  //   drop-shadow(-1em 1em 0em black) drop-shadow(1em -1em 0em black);
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  background: #333637;
+}
+
+.cyNode-hexagon-parent {
+  clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%);
+  background: #333637;
+}
+
+.cyNode-hexagon {
+  /* width: 170px; */
+  min-height: 60px;
+  /* min-height: 60px; */
+  // padding: 8px;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  color: white;
+  /* background-color: #CECECE; */
+  // border-radius: 5px;
+  box-shadow: 3px 3px 3px rgba(68, 68, 68, 0.6);
+  color: #333637;
+  font-weight: 700;
+  // border-style: solid;
+  // border-color: #333637;
+  cursor: pointer;
+
+  width: var(--s);
+  margin: var(--m);
+  padding: 20px;
+  height: calc(var(--s) * 1.1547);
+  display: inline-block;
+  font-size: initial; /* we reset the font-size if we want to add some content */
+  clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%);
+}
+
+.cyNode-rhombus {
+  /* width: 170px; */
+  min-height: 60px;
+  /* min-height: 60px; */
+  // padding: 8px;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  color: white;
+  /* background-color: #CECECE; */
+  // border-radius: 5px;
+  box-shadow: 3px 3px 3px rgba(68, 68, 68, 0.6);
+  color: #333637;
+  font-weight: 700;
+  // border-style: solid;
+  // border-color: #333637;
+  cursor: pointer;
+
+  width: var(--s);
+  margin: var(--m);
+  padding: 20px;
+  height: calc(var(--s));
+  display: inline-block;
+  font-size: initial; /* we reset the font-size if we want to add some content */
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
 }
 
 .nodeTitle {
@@ -144,9 +259,9 @@ body {
   background-color: rgb(51, 51, 51, 0.618);
   border-radius: 2px;
   padding: 5px;
-  
+
   // text-shadow:
-  //  -1px -1px 0 #111,  
+  //  -1px -1px 0 #111,
   //   1px -1px 0 #111,
   //   -1px 1px 0 #111,
   //    1px 1px 0 #111;
