@@ -9244,7 +9244,7 @@ color:"#000",shape:"rectangle","text-opacity":"0.56","font-size":"10px","text-tr
 // "border-width": 2,
 // "border-color": "#505050",
 // "text-wrap": "wrap",
-height:sT,width:sM,padding:sC,visibility:"hidden"}}],layout:{...t.layout,animate:!1},elements:e});// cy.fit();
+height:sT,width:sM,padding:sC}}],layout:{...t.layout,animate:!1},elements:e});// cy.fit();
 //NODE EVENTS
 // cy.on("mouseover", "node", function (e) {
 //   e.target.addClass("hover");
