@@ -20,7 +20,7 @@
     "@parcel/service-worker": "^2.10.3",
     "bootstrap": "^5.3.2",
     "comlink": "^4.4.1",
-    "cytoscape": "3.27.0",
+    "cytoscape": "3.28.1",
     "cytoscape-cise": "^1.0.0",
     "cytoscape-cola": "^2.5.1",
     "cytoscape-context-menus": "4.1.0",
@@ -38,7 +38,7 @@
     "web-worker": "^1.2.0"
   },
   "devDependencies": {
-    "@babel/core": "7.23.3",
+    "@babel/core": "7.23.7",
     "@parcel/transformer-sass": "2.10.3",
     "concurrently": "^8.2.2",
     "parcel": "2.10.3",
