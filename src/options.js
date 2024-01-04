@@ -170,9 +170,10 @@ export const optionsDefault = {
     "UI7",
     "PEI",
     "GEhE",
+    "lujvo"
   ].concat(selmaho),
   pictureRules: ["BRIVLA", "indicator", "KOhA", "GOhA"],
-  hyperedgeRules: ["spaces", "gismu", "fuhivla", "CMEVLA", "brivla"],
+  hyperedgeRules: ["spaces", "lujvo", "gismu", "fuhivla", "CMEVLA"],
   nodesToDelete: [
     "_pre$",
     "^initial_spaces$",
