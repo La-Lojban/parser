@@ -44,12 +44,20 @@ export default class Tree {
 
   addEventListeners() {
     this.canvas.addEventListener("mousedown", this.onPointerDown.bind(this));
-    this.canvas.addEventListener("touchstart", (e) => this.handleTouch(e, this.onPointerDown.bind(this)));
+    this.canvas.addEventListener("touchstart", (e) =>
+      this.handleTouch(e, this.onPointerDown.bind(this))
+    );
     this.canvas.addEventListener("mouseup", this.onPointerUp.bind(this));
-    this.canvas.addEventListener("touchend", (e) => this.handleTouch(e, this.onPointerUp.bind(this)));
+    this.canvas.addEventListener("touchend", (e) =>
+      this.handleTouch(e, this.onPointerUp.bind(this))
+    );
     this.canvas.addEventListener("mousemove", this.onPointerMove.bind(this));
-    this.canvas.addEventListener("touchmove", (e) => this.handleTouch(e, this.onPointerMove.bind(this)));
-    this.canvas.addEventListener("wheel", (e) => this.adjustZoom(e.deltaY * SCROLL_SENSITIVITY));
+    this.canvas.addEventListener("touchmove", (e) =>
+      this.handleTouch(e, this.onPointerMove.bind(this))
+    );
+    this.canvas.addEventListener("wheel", (e) =>
+      this.adjustZoom(e.deltaY * SCROLL_SENSITIVITY)
+    );
     window.addEventListener("resize", this.resizeCanvas.bind(this));
   }
 
@@ -64,7 +72,7 @@ export default class Tree {
     y,
     italic,
     bold,
-    fontsize = this.fontSize,
+    fontSize = this.fontSize,
     shadowColor = "transparent",
     shadowBlur = 0,
     shadowOffsetX = 0,
@@ -72,12 +80,12 @@ export default class Tree {
     fillStyle,
   }) => {
     this.context.font = [
-      italic ? "italic " : "",
-      bold ? "bold " : "",
-      fontsize,
-      `px `,
-      this.font,
-    ].join("");
+      italic ? "italic" : null,
+      bold ? "bold" : null,
+      `${fontSize}px ${this.font}`,
+    ]
+      .filter(Boolean)
+      .join(" ");
     if (fillStyle) this.CCsetFillStyle(fillStyle);
 
     this.CCsetShadow({ shadowColor, shadowBlur, shadowOffsetX, shadowOffsetY });
@@ -307,7 +315,7 @@ export default class Tree {
       x: offset,
       y: drawable.top + this.fontSize / 2 - 9,
       italic: true,
-      fontsize: this.fontSize * 0.75,
+      fontSize: this.fontSize * 0.75,
     });
   };
 
@@ -437,7 +445,12 @@ const getNodeWidth = (tree, node) => {
   }
 };
 
-const calculateDrawablePositions = (tree, drawable, vscaler, parentOffset = 0) => {
+const calculateDrawablePositions = (
+  tree,
+  drawable,
+  vscaler,
+  parentOffset = 0
+) => {
   let offset = 0;
   let scale = 1;
   let hasArrow = drawable.arrow;
@@ -451,7 +464,12 @@ const calculateDrawablePositions = (tree, drawable, vscaler, parentOffset = 0) =
     child.top = child.depth * (tree.fontSize * 3 * vscaler) + NODE_PADDING / 2;
     child.left = offset + parentOffset;
     child.width *= scale;
-    const childHasArrow = calculateDrawablePositions(tree, child, vscaler, child.left);
+    const childHasArrow = calculateDrawablePositions(
+      tree,
+      child,
+      vscaler,
+      child.left
+    );
     if (childHasArrow) hasArrow = true;
     offset += child.width;
   });
@@ -571,13 +589,13 @@ const findMaxDepthBetween = (drawable, left, right, maxY = 0) => {
   return maxY;
 };
 
-const makeArrowSet = (root, fontsize) => makeArrowSetOn(root, root, fontsize);
+const makeArrowSet = (root, fontSize) => makeArrowSetOn(root, root, fontSize);
 
-const makeArrowSetOn = (root, drawable, fontsize) => {
+const makeArrowSetOn = (root, drawable, fontSize) => {
   const arrowSet = new ArrowSet();
 
   drawable.children.forEach((child) => {
-    arrowSet.concatenate(makeArrowSetOn(root, child, fontsize));
+    arrowSet.concatenate(makeArrowSetOn(root, child, fontSize));
   });
 
   if (!drawable.isLeaf || !drawable.arrow) return arrowSet;
@@ -587,12 +605,12 @@ const makeArrowSetOn = (root, drawable, fontsize) => {
 
   const from = {
     x: getDrawableCenter(drawable),
-    y: drawable.top + fontsize * 1.2,
+    y: drawable.top + fontSize * 1.2,
   };
 
   const to = {
     x: getDrawableCenter(target),
-    y: target.top + fontsize * 1.2,
+    y: target.top + fontSize * 1.2,
   };
 
   const bottom =
@@ -609,4 +627,3 @@ const makeArrowSetOn = (root, drawable, fontsize) => {
 
   return arrowSet;
 };
-
