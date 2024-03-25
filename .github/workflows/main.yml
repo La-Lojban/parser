@@ -46,6 +46,7 @@ jobs:
           ${{ github.workspace }}/src:/app/src
           ${{ github.workspace }}/dist:/app/dist
           ${{ github.workspace }}/assets:/app/assets
+          ${{ github.workspace }}/tools:/app/tools
 
     - name: Upload artifact
       uses: actions/upload-artifact@v3
