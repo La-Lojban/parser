@@ -1,3 +1,0 @@
-(()=>{let e=[],t="";async function a(){let a=await caches.open(t);await a.addAll(e.concat(["/","/index.html","/parser/index.html","/parser/"]))}async function n(){let e=await caches.keys();await Promise.all(e.map(e=>e!==t&&caches.delete(e)))}e=["index.html","pluka_lanci.54dadede.svg","index.35926f38.js","worker.0b3a4775.js","index.1a55a3d8.css","index.runtime.1e557104.js"],t="15c2c085",addEventListener("install",e=>e.waitUntil(a())),addEventListener("activate",e=>e.waitUntil(n())),addEventListener("fetch",function(e){e.respondWith(caches.match(e.request).then(function(t){return(// Cache hit - return response
-t||fetch(e.request).catch(function(){// Fallback to index.html if the request fails
-return caches.match("/parser/index.html")}))}))})})();
