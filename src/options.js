@@ -240,7 +240,7 @@ export const layouts = {
     renderer: "three.js",
     config: {
       dagMode: undefined,
-      dagLevelDistance: 60,
+      dagLevelDistance: 90,
     },
   },
   threeLR: {
@@ -248,7 +248,7 @@ export const layouts = {
     renderer: "three.js",
     config: {
       dagMode: "lr",
-      dagLevelDistance: 60,
+      dagLevelDistance: 90,
     },
   },
   threeTD: {
@@ -256,7 +256,7 @@ export const layouts = {
     renderer: "three.js",
     config: {
       dagMode: "td",
-      dagLevelDistance: 60,
+      dagLevelDistance: 90,
       _3D: true,
     },
   },
